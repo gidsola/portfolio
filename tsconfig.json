@@ -1,0 +1,51 @@
+{
+  // Change this to match your project
+  "exclude": [
+    "node_modules",
+    "main"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./components/*"
+      ]
+    },
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "outDir": ".types",
+    "declarationMap": false,
+    "allowImportingTsExtensions": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/types/**/*.tsx"
+   ]
+}
