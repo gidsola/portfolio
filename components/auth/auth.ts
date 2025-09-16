@@ -1,4 +1,4 @@
-import { AccountData, TierObject } from "@/types/app.types";
+import { AccountData } from "@/types/app.types";
 import NextAuth, { type DefaultSession } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
@@ -8,7 +8,6 @@ import DatabaseHelper from '@/main/mysql2/helper/DatabaseHelper';
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: User & AdapterUser
-    tier?: TierObject
   }
   interface User extends AccountData { }
 };
@@ -78,8 +77,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
      * Returns the session with the user data.
      */
     async session({ session, token }) {
-      const tier = await DatabaseHelper.getTierById(token.tier as number);
-      return { ...session, user: { ...session.user, ...token }, tier: tier }
+      return { ...session, user: { ...session.user, ...token }}
     },
   },
 });

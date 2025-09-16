@@ -1,12 +1,10 @@
-import { Session } from "@auth/core/types";
+
 import Link from "next/link";
-import DropdownUser from "./DropdownUser";
 import Image from "next/image";
 
 export default function Header(props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
-  session: Session | null;
 }) {
   const pages = [
     ["Home", "/"],
@@ -52,7 +50,7 @@ export default function Header(props: {
                 ></span>
               </span>
             </span>
-            
+
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
 
@@ -67,7 +65,7 @@ export default function Header(props: {
           </Link>
         </div>
 
-     
+
         <Link className="block 2xsm:hidden" href="/">
           <Image
             width={150}
@@ -91,12 +89,6 @@ export default function Header(props: {
                 </Link>
               </li>
             ))}
-          </ul>
-        </div>
-
-        <div className="flex items-center gap-3 2xsm:gap-7">
-          <ul className="flex items-center gap-2 2xsm:gap-4">
-            <DropdownUser session={props.session} />
           </ul>
         </div>
       </div>

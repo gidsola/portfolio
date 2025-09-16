@@ -10,7 +10,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <div>
-            <Default session={session} >
+            <Default >
               {children}
             </Default>
         </div>

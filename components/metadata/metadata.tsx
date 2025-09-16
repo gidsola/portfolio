@@ -1,6 +1,6 @@
-// import { Metadata } from "next";
+import { Metadata } from "next";
 
-export const metadata: /*Metadata*/object = { // using generic for pass untill other packages get installed.
+export const metadata: Metadata = {
   title: "",
   description: "",
   openGraph: {
