@@ -1,5 +1,5 @@
 {
-  "main": "./main/OnSocket.mjs",
+  "main": "./main/index.mjs",
   "scripts": {
     "build": "next build",
     "start": "node --trace-deprecation ./main/index.mjs"
