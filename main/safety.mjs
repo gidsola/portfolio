@@ -1,5 +1,5 @@
 
-import { sqlSet } from '../../lib/mysql2/connector/Mysql2Connector.mjs';
+import { sqlSet } from './mysql2/connector/Mysql2Connector.mjs';
 
 const ipBlockList = (await sqlSet('SELECT * FROM ip_blocklist', [])).map((x/*: any*/) => x.part);
 const urlBlockList = (await sqlSet('SELECT * FROM url_blocklist', [])).map((x/*: any*/) => x.url);

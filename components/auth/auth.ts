@@ -3,7 +3,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
 import authConfig from '@/auth.config';
-import DatabaseHelper from '@/lib/mysql2/helper/DatabaseHelper';
+import DatabaseHelper from '@/main/mysql2/helper/DatabaseHelper';
 
 declare module "next-auth" {
   interface Session extends DefaultSession {

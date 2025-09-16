@@ -42,16 +42,16 @@ class MicroService extends EventEmitter {
 
     this._httpsServerOptions = {
       key: this.development
-        ? readFileSync(process.cwd() + `/etc/ssl/localhost.key`)
-        : readFileSync(process.cwd() + `/etc/ssl/private.key`),
+        ? readFileSync(process.cwd() + `/main/ssl/localhost.key`)
+        : readFileSync(process.cwd() + `/main/ssl/private.key`),
 
       cert: this.development
-        ? readFileSync(process.cwd() + `/etc/ssl/localhost.crt`)
-        : readFileSync(process.cwd() + `/etc/ssl/certificate.crt`),
+        ? readFileSync(process.cwd() + `/main/ssl/localhost.crt`)
+        : readFileSync(process.cwd() + `/main/ssl/certificate.crt`),
 
       ca: this.development
         ? undefined
-        : [readFileSync(process.cwd() + `/etc/ssl/ca_bundle.crt`)],
+        : [readFileSync(process.cwd() + `/main/ssl/ca_bundle.crt`)],
 
       keepAlive: false,
       requestCert: false,
