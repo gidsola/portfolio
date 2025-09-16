@@ -1,12 +1,21 @@
 {
+  "main": "./main/OnSocket.mjs",
+  "scripts": {
+    "build": "next build",
+    "start": "node --trace-deprecation ./main/index.mjs"
+  },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "next": "^15.5.3",
     "next-auth": "^5.0.0-beta.29",
+    "node-loader": "^2.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^24.5.0",
     "@types/react": "^19.1.13"
   }
 }
