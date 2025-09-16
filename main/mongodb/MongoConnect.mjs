@@ -8,6 +8,9 @@ class MongoConnect {
   client;
 
   /**
+   * The url or "Connection String" should follow formats as specified at:
+   * https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
+   * 
    * @param {string} url 
    */
   constructor(url) {
@@ -28,6 +31,10 @@ class MongoConnect {
     throw new Error("Unrecognized connection string..");
   };
 
+  /**
+   * 
+   * @returns an instantiated client object
+   */
   async getClient() {
     return this.client;
   };
@@ -37,7 +44,7 @@ export default MongoConnect;
 
 
 
-/**
+/*
  *          TESTING GROUNDS
  */
 
@@ -87,7 +94,7 @@ try {
   client.close();
 }
 catch (e) {
-  if (e instanceof MongoServerError)
+  if (e instanceof MongoServerError)// only doing this over a ternary because the docs mention it specifically.(errmsg only exists on MongoServerError)
     console.log("NOPE", e.errmsg);
   else console.log("NOPE", e);
 };
