@@ -242,7 +242,7 @@ function WriteAndEnd(res, statusCode, message) {
   return res
     .writeHead(statusCode, {
       'Content-Length': Buffer.byteLength(message),
-      'Content-Type': 'text/plain',
+      'Content-Type': 'text/plain'
     })
     .end(message);
 };
