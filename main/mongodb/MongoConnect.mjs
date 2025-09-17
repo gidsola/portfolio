@@ -55,7 +55,7 @@ class Mongo extends MongoConnect {
    * 
    * @param {string} collection collection name to use when creating
    * @param {Object<any>} schema validator object
-   * @returns the successfully created collection or throws
+   * @returns the successfully created collection
    */
   async createSchemaCollection(collection, schema) {
     try {
@@ -65,6 +65,13 @@ class Mongo extends MongoConnect {
       throw new Error("Failed to create collection!")
     }
   };
+
+  /**
+   * create a validation schema from an Object
+   */
+  async createSchemaFromObject(){
+    //maybe not for this project.
+  }
 
   /**
    * @returns a client object

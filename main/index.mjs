@@ -9,7 +9,7 @@ import chalk from 'chalk';
 
 try {
   // startup check, bail if no version info
-  const mongo = new Mongo("mongodb://localhost:27017");// use for version info. ::nyi
+  const mongo = new Mongo("mongodb://localhost:27017", "portfolio");// use for version info. ::nyi
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const service = new MicroService('localhost');
