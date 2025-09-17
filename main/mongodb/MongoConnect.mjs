@@ -1,4 +1,4 @@
-import { MongoClient, MongoServerError } from 'mongodb';
+import { MongoClient, MongoServerError, ReadPreference } from 'mongodb';
 
 
 class MongoConnect {
@@ -54,28 +54,42 @@ const client = await (new MongoConnect("mongodb://localhost:27017")).getClient()
 try {
   await client.connect();
 
-  const dbOptions = {
-    raw: false,
-    useBigInt64: false,
-    promoteLongs: true,
-    promoteValues: true,
-    promoteBuffers: false,
-    ignoreUndefined: false,
-    bsonRegExp: false,
-    serializeFunctions: false, // explore. does this actually keep functions in objects ?? and does it auto deserialize when grabbing datas?
-    // fieldsAsRaw: {}, // commented until i know what it does.
-    enableUtf8Validation: true,
-    timeoutMS: 5000, // didnt like the undefined
-    // readPreference: [ReadPreference]  //look in source. uncomment to test non-mangoserver error catch
-  };
-  const collection = client.db('local', dbOptions).collection('local');
+  /**
+   * @type {ReadPreference}
+   */
+  const
+    readPreference/*: ReadPreference*/ = [{
+      mode: 'primary',
+      // tags: undefined,
+      // hedge: undefined,
+      // maxStalenessSeconds: undefined,
+      // minWireVersion: undefined
+    }],
 
-  // uncomment both inserts to trigger mangoserver error catch
+    dbOptions = {
+      raw: false,
+      useBigInt64: false,
+      promoteLongs: true,
+      promoteValues: true,
+      promoteBuffers: false,
+      ignoreUndefined: false,
+      bsonRegExp: false,
+      serializeFunctions: false, // TODO: explore. does this actually keep functions in objects ?? and does it auto deserialize when grabbing datas?
+      fieldsAsRaw: {}, // empty by default.
+      enableUtf8Validation: true,
+      timeoutMS: 5000,
+      readPreference // readPreference: [ReadPreference]
+    },
+    collection = client.db('local', dbOptions).collection('local');
+
+  console.log("Collection Output: ", collection);
+
+  // uncomment both inserts to trigger mangoserver error catch, just one to make loggables
   // await collection.insertOne({ _id: 1, label: "title" });
   // await collection.insertOne({ _id: 1, label: "title" });
 
   // this only errs if duplicate is sequential. later added duplicates seem to get a new object id.. 
-  // look deeper and make insert handler to manage this if needed.
+  // TODO: look deeper and make insert handler to manage this if needed.
   //    },
   //    {
   //      _id: new ObjectId('68c9b7c156eb17a2b998fcec'),
@@ -88,10 +102,9 @@ try {
   //      label: 'title'
   //    },
 
-  const findResult = await collection.find({}).toArray();
+  const findResult = await collection.find().toArray();// didnt need the empty object
   console.log('Found documents =>', findResult);
 
-  client.close();
 }
 catch (e) {
   if (e instanceof MongoServerError)// only doing this over a ternary because the docs mention it specifically.(errmsg only exists on MongoServerError)
