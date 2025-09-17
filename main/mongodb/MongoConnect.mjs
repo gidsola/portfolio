@@ -1,12 +1,9 @@
 import { MongoClient, MongoServerError, ReadPreference } from 'mongodb';
+import { students } from './schemas/students.mjs' // test object from docs
 
 
 class MongoConnect {
-  /**
-   * @private
-   */
-  client;
-
+  
   /**
    * The url or "Connection String" should follow formats as specified at:
    * https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
@@ -31,16 +28,54 @@ class MongoConnect {
     throw new Error("Unrecognized connection string..");
   };
 
+
+};
+
+
+class Mongo extends MongoConnect {
+  
+  /**
+   * The url or "Connection String" should follow formats as specified at:
+   * https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
+   * 
+   * @param {string} url 
+   */
+  constructor(url){
+    super(url);
+    
+  }
+
   /**
    * 
-   * @returns an instantiated client object
+   * @param {string} db database to use
+   * @param {Object<any>} schema vlidator object
+   */
+  async addSchema(db, schema) {
+    this.client.db(db).createCollection(schema)
+  };
+
+
+  /**
+   * 
+   * @returns a client object
    */
   async getClient() {
     return this.client;
   };
 
+
 };
-export default MongoConnect;
+export default Mongo;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -49,11 +84,12 @@ export default MongoConnect;
  *       dont forget to rem before using class...
  */
 
-// const client = await (new MongoConnect("localhost:27017")).getClient(); // Errors as expected.
-// const client = await (new MongoConnect("mongodb://localhost:27017")).getClient();
+
+
+// const mongo = new Mongo("mongodb://localhost:27017");
 
 // try {
-//   await client.connect();
+//   await mongo.client.connect();
 
 //   /**
 //    * @type {ReadPreference}
@@ -81,7 +117,7 @@ export default MongoConnect;
 //       timeoutMS: 5000,
 //       readPreference // readPreference: [ReadPreference]
 //     },
-//     collection = client.db('local', dbOptions).collection('local');
+//     collection = mongo.client.db('local', dbOptions).collection('local');
 
 //   console.log("Collection Output: ", collection);
 
@@ -112,5 +148,5 @@ export default MongoConnect;
 //     console.log("NOPE", e.errmsg);
 //   else console.log("NOPE", e);
 // };
-// client.close();
+// mongo.client.close();
 

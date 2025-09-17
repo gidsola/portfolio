@@ -1,21 +1,19 @@
 
 import { readFile } from 'fs/promises';
 import { OnSocketBanner } from './banners.mjs';
-import MongoConnect from './mongodb/MongoConnect.mjs';
+import Mongo from './mongodb/MongoConnect.mjs';
 import MicroService from './MicroService.mjs';
 import logger from './logger.mjs';
 import readline from 'readline';
 import chalk from 'chalk';
 
 try {
-  // startup check, bail if no version file
+  // startup check, bail if no version info
+  const mongo = new Mongo("mongodb://localhost:27017");// use for version info. ::nyi
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
-  const
-    MongoClient = await (new MongoConnect("mongodb://localhost:27017")).getClient(),
-    Service = new MicroService('localhost');
-
-  Service.on('ready', () => logger.info("    System Online"));
+  const service = new MicroService('localhost');
+  service.on('ready', () => logger.info("    System Ready"));
 
   readline.createInterface({
     input: process.stdin,
@@ -23,12 +21,12 @@ try {
   })
     .on('line', async (input) => {
       if (input.trim().toLowerCase() === 'shutdown') {
-        await gracefulShutdown(Service);
+        await gracefulShutdown(service);
       }
     });
 
-  process.on('SIGINT', async () => { await gracefulShutdown(Service) });
-  process.on('SIGTERM', async () => { await gracefulShutdown(Service) });
+  process.on('SIGINT', async () => { await gracefulShutdown(service) });
+  process.on('SIGTERM', async () => { await gracefulShutdown(service) });
 
 } catch (e) {
   console.error(e);
