@@ -1,7 +1,7 @@
 
-import { readFile } from 'node:fs';
-// import { loadContainers, stopAllContainers } from './ContainerMgr.mjs';
+import { readFile } from 'fs/promises';
 import { OnSocketBanner } from './banners.mjs';
+import MongoConnect from './mongodb/MongoConnect.mjs';
 import MicroService from './MicroService.mjs';
 import logger from './logger.mjs';
 import readline from 'readline';
@@ -9,14 +9,13 @@ import chalk from 'chalk';
 
 try {
   // startup check, bail if no version file
-  readFile('.version', 'utf8', async (e, v) => {
-    if (e) throw e;
-    // display banner
-    OnSocketBanner(v);
-  });
+  OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
-  const Service = new MicroService('localhost');
-  Service.on('ready', ()=>logger.info("System Online"));
+  const
+    MongoClient = await (new MongoConnect("mongodb://localhost:27017")).getClient(),
+    Service = new MicroService('localhost');
+
+  Service.on('ready', () => logger.info("System Online"));
 
   readline.createInterface({
     input: process.stdin,
