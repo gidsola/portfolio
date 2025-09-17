@@ -6,7 +6,7 @@ class MongoConnect {
 
   /**
    * The url or "Connection String" should follow formats as specified at:
-   * https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
+   * @see https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
    * 
    * @param {string} url connection string
    * @param {string | null} db database name to use if not specifying in connection string
@@ -39,7 +39,7 @@ class Mongo extends MongoConnect {
 
   /**
    * The url or "Connection String" should follow formats as specified at:
-   * https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
+   * @see https://www.mongodb.com/docs/manual/reference/connection-string-examples/#connection-string-examples
    * 
    * @param {string} url connection string
    * @param {string | null} db database name to use if not specifying in connection string
@@ -52,6 +52,8 @@ class Mongo extends MongoConnect {
 
   /**
    * Creates a collection with schema validation.
+   * 
+   * @see https://www.mongodb.com/docs/manual/core/schema-validation/specify-json-schema/#specify-json-schema-validation
    * 
    * @param {string} collection collection name to use when creating
    * @param {Object<any>} schema validator object
