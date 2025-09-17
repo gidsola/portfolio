@@ -15,23 +15,15 @@ try {
     MongoClient = await (new MongoConnect("mongodb://localhost:27017")).getClient(),
     Service = new MicroService('localhost');
 
-  Service.on('ready', () => logger.info("System Online"));
+  Service.on('ready', () => logger.info("    System Online"));
 
   readline.createInterface({
     input: process.stdin,
     output: process.stdout
   })
     .on('line', async (input) => {
-      // TODO: add more commands
-
-      // shutdown services including containers
       if (input.trim().toLowerCase() === 'shutdown') {
         await gracefulShutdown(Service);
-      }
-
-      // exit without stopping containers
-      if (input.trim().toLowerCase() === 'exit') {
-        process.exit(0);
       }
     });
 
@@ -45,7 +37,6 @@ try {
 
 
 /**
- * 
  * @param {MicroService} Service
  * 
  * @private
@@ -54,10 +45,7 @@ async function gracefulShutdown(Service) {
   try {
     Service.NetService.closeAllConnections();
     await Service.NextServer.close();
-    logger.info(chalk.yellowBright('<< Next Offline >>'));
-
-    // await stopAllContainers();
-    // logger.info(chalk.yellowBright('<< Containers Offline >>'));
+    logger.info(chalk.yellowBright('<< NetService Offline >>'));
 
     Service.NetService.close(() => {
       logger.info(chalk.greenBright('<< Exiting Normally >>'));
@@ -66,7 +54,7 @@ async function gracefulShutdown(Service) {
 
   }
   catch (e) {
-    logger.error('Error closing Next Server:', e);
+    logger.error('Error closing NetService:', e);
     Service.NetService.close(() => {
       logger.info(chalk.redBright('Exiting with code: 1 ->>'));
       process.exit(1);
