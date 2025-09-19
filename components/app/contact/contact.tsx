@@ -7,7 +7,7 @@ export default function Contact(){
       <div className="page-container">
         <h1 className="section-title">Get In Touch</h1>
         <div className="grid">
-          
+
           <div className="contact-info">
             <h2>Contact Information</h2>
             <div className="info-grid">
@@ -22,9 +22,8 @@ export default function Contact(){
               <div className="info-item">
                 <h3>Social</h3>
                 <div className="social-links">
-                  <a href="#" className="social-link">LinkedIn</a>
-                  <a href="#" className="social-link">Twitter</a>
-                  <a href="#" className="social-link">GitHub</a>
+                  <a href="https://www.linkedin.com/in/michael-goodie/" className="social-link">LinkedIn</a>
+                  <a href="https://github.com/gidsola" className="social-link">GitHub</a>
                 </div>
               </div>
             </div>
