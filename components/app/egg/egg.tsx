@@ -28,7 +28,8 @@ export default function Egg({ codeSnippets }: { codeSnippets: script[] }) {
         <div className="terminal-content">
           <div className="code-header">
             <h1>🐍 Python Code Snippets</h1>
-            <p className="tagline">A collection of Python examples</p>
+            <p className="tagline">A collection of Python examples.</p>
+            <p className="tagline">This page is the closest representation of another site that I cannot remember and could not find. If someone knows which site I speak of please reach out. 😀</p>
           </div>
 
           {codeSnippets.map((snippet, index) => (
