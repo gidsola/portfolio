@@ -1,8 +1,13 @@
 
-import { sqlSet } from './mysql2/connector/Mysql2Connector.mjs';
+import logger from './logger.mjs';
+import chalk from 'chalk';
+// TODO: re-write for mongo
+//   AND
+// look at access methods. currently loading tables and updating active data
 
-const ipBlockList = (await sqlSet('SELECT * FROM ip_blocklist', [])).map((x/*: any*/) => x.part);
-const urlBlockList = (await sqlSet('SELECT * FROM url_blocklist', [])).map((x/*: any*/) => x.url);
+const ipBlockList = [{part:"999.999.999"}];//(await sqlSet('SELECT * FROM ip_blocklist', [])).map((x/*: any*/) => x.part);
+const urlBlockList = [{url: "some/path"}];//(await sqlSet('SELECT * FROM url_blocklist', [])).map((x/*: any*/) => x.url);
+
 const RateLimitBucket = new Map();
 const rateLimitIpBlockList/*: string[]*/ = [];
 
@@ -14,13 +19,26 @@ const rateLimitIpBlockList/*: string[]*/ = [];
  * @returns 
  */
 export async function isBlocked(method/*: string*/, address/*: string*/, url/*: string*/) {
-  if (ipBlockList.some((x/*: string*/) => address?.match(x))) return true;
-  if (urlBlockList.some((x/*: string*/) => url?.match(x))) return true;
+  if (ipBlockList.some((x/*: string*/) => console.log("ip",address?.match(x)))) {
+
+    return true;
+  }
+  
+  if (urlBlockList.some((x/*: string*/) => console.log("url",url?.match(x)))) {
+    return true;
+  }
   return false;
 };
 
+/**
+ * 
+ * @param {string} method 
+ * @param {string} address 
+ * @param {string} url 
+ * @returns 
+ */
 export async function isRateLimited(method/*: string*/, address/*: string*/, url/*: string*/)/*: boolean */ {
-  const allowedRateLimit = 100;
+  const allowedRateLimit = 10;
   const releaseTime = 5000;
   const inactivityTime = 10000;
   const key = `${url}:${address}`;
@@ -40,7 +58,7 @@ export async function isRateLimited(method/*: string*/, address/*: string*/, url
     if (requestCount >= allowedRateLimit) {
       rateLimitIpBlockList.push(address);
       RateLimitBucket.set(address, now);
-      logger.info(chalk.redBright.bgBlack('Rate Limited:'), chalk.cyanBright(method, address, url));
+      logger.info(chalk.redBright.bgBlack('Rate Limited: ') + chalk.cyanBright(method, address, url));
       return true;
     } else RateLimitBucket.set(key, requestCount + 1);
   } else RateLimitBucket.set(key, 1);
@@ -74,3 +92,4 @@ CREATE TABLE `url_blocklist` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 */
+

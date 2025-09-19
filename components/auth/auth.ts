@@ -3,7 +3,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import Credentials from "next-auth/providers/credentials";
 import authConfig from '@/auth.config';
-import DatabaseHelper from '@/main/mysql2/helper/DatabaseHelper';
+// import DatabaseHelper from '@/main/mysql2/helper/DatabaseHelper';
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -42,7 +42,19 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             if (typeof credentials.password !== "string")
               return null;
 
-            const user = await DatabaseHelper.getAccountByEmail(credentials.email);
+            const user = {
+              uid: "123qwerty",
+              auid: "asdfg",
+              userName: "dd", 
+              firstName: "dd", 
+              lastName: "dd", 
+              hash: "string",
+              verified: 123,
+              tier: 1,
+              isAdmin: 1,
+              created_at: "datestring"
+            };
+            //await DatabaseHelper.getAccountByEmail(credentials.email);
             // user not found
             if (!user) {
               console.error("User not found");
@@ -77,7 +89,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
      * Returns the session with the user data.
      */
     async session({ session, token }) {
-      return { ...session, user: { ...session.user, ...token }}
+      return { ...session, user: { ...session.user, ...token } }
     },
   },
 });
