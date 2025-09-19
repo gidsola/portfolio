@@ -1,7 +1,7 @@
 
 import { readFile } from 'fs/promises';
 import { OnSocketBanner } from './banners.mjs';
-import Mongo from './mongodb/MongoConnect.mjs';
+// import Mongo from './mongodb/MongoConnect.mjs';
 import MicroService from './MicroService.mjs';
 import logger from './logger.mjs';
 import readline from 'readline';
@@ -9,7 +9,7 @@ import chalk from 'chalk';
 
 try {
   // startup check, bail if no version info
-  const mongo = new Mongo("mongodb://localhost:27017", "portfolio");// use for version info. ::nyi
+  // const mongo = new Mongo("mongodb://localhost:27017", "portfolio");// use for version info?
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const service = new MicroService('localhost');
