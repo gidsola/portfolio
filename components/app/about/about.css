@@ -3,9 +3,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f7fa;
+  /* background-color: #f5f7fa; */
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.about-me {
+  color: var(--secondary-color);
+}
+.about-me h2 {
+  color: var(--secondary-color);
 }
 
 .profile-card {
@@ -20,8 +27,8 @@
 .profile-header {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #6e8efb, #444147);
-  color: white;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  /* color: white; */
 }
 
 .profile-picture {
@@ -39,12 +46,14 @@
   font-size: 2rem;
   margin: 0.5rem 0;
   font-weight: 600;
+  color: var(--primary-text-color);
 }
 
 .title {
   margin: 0;
   opacity: 0.9;
   font-size: 1.1rem;
+  color: var(--primary-text-color);
 }
 
 .about-content {
@@ -52,7 +61,7 @@
 }
 
 .bio-section p {
-  color: #555;
+  color: var(--secondary-color);
   line-height: 1.7;
   margin-bottom: 1.5rem;
 }
@@ -82,7 +91,7 @@
 }
 
 .skills-section h2 {
-  color: #444147;
+  /* color: #444147; */
   margin-bottom: 1rem;
 }
 
@@ -97,7 +106,7 @@
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
-  color: #495057;
+  color: var(--secondary-color);;
 }
 
 .contact-section {
@@ -112,7 +121,7 @@
 
 .contact-info p {
   margin: 0.5rem 0;
-  color: #555;
+  /* color: #555; */
 }
 
 .about-me h2 {

@@ -1,7 +1,7 @@
 
 
 .services-page {
-  background-color: #f5f7fa;
+  /* background-color: #f5f7fa; */
   padding: 2rem;
 }
 
@@ -9,7 +9,7 @@
   text-align: center;
   max-width: 800px;
   margin: 0 auto 3rem;
-  color: #555;
+  color: var(--primary-text-color);
   font-size: 1.1rem;
   line-height: 1.7;
 }
@@ -69,9 +69,13 @@
 .services-cta {
   text-align: center;
   padding: 2rem;
-  background: white;
+  background: rgb(214, 214, 214);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(24, 24, 24);
+}
+.services-cta a, .services-cta a:visited {
+  color: var(--primary-text-color);
+  text-decoration: none;
 }
 
 .services-cta h2 {
