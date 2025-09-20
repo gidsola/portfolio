@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import './projects.css';
+import '@/css/projects.css';
 
 
 const repos = [

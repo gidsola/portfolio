@@ -1,5 +1,5 @@
 import React from 'react';
-import './egg.css';
+import '@/css/egg.css';
 
 
 export type script = {
