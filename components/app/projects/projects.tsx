@@ -4,22 +4,11 @@ import { useState, useEffect } from 'react';
 import '@/css/projects.css';
 
 
-const repos = [
-  { url: 'https://api.github.com/repos/gidsola/portfolio' },
-  { url: 'https://api.github.com/repos/gidsola/electron-nextjs-starter-app' },
-  { url: 'https://api.github.com/repos/gidsola/fitlife' },
-  { url: 'https://api.github.com/repos/gidsola/Mistral-AI-ChatBox' },
-  { url: 'https://api.github.com/repos/gidsola/Discord-Oauth2' },
-  { url: 'https://api.github.com/repos/gidsola/Discord-Interactions' }
-];
-
-
-export default function Projects() {
+export default function Projects({repos}:{repos: Repos}) {
   const
     [projects, setProjects] = useState<any[]>([]),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(null);
-
 
   useEffect(() => {
     const getProjects = async () => {

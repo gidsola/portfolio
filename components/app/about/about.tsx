@@ -2,9 +2,9 @@ import React from 'react';
 import '@/css/about.css';
 
 
-const aboutSkills= ['JavaScript', 'React', 'HTML/CSS', 'Node.js', 'Python', 'Weaviate'];
 
-export default function About() {
+
+export default function About({skills}:{skills:Skills}) {
   return (
     <div className="about-me">
       <div className="profile-card">
@@ -41,7 +41,7 @@ export default function About() {
           <section className="skills-section">
             <h2>Skills</h2>
             <div className="skills-grid">
-              {aboutSkills.map((skill, index) => (
+              {skills.map((skill, index) => (
                 <span key={index} className="skill-tag">{skill}</span>
               ))}
             </div>

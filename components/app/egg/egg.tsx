@@ -1,12 +1,5 @@
-import React from 'react';
+// import React from 'react';
 import '@/css/egg.css';
-
-
-export type script = {
-  title: string;
-  code: string;
-  description: string;
-};
 
 
 export default function Egg({ codeSnippets }: { codeSnippets: script[] }) {

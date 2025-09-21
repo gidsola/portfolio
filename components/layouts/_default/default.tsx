@@ -2,13 +2,11 @@
 
 import React, { useState, useEffect, ReactNode } from "react";
 import Loader from "@/loader";
-import Header, { HeadPages } from "@/layouts/_default/defaultheader";
+import Header from "@/layouts/_default/defaultheader";
 
-export default function Default({ children, pages }: { children: ReactNode, pages: HeadPages }) {
+export default function Default({ children, links }: { children: ReactNode, links: HeaderLinks }) {
   const
     [loading, setLoading] = useState<boolean>(true);
-
-  // console.log("DEFAULT", pages)
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 3000);
@@ -16,7 +14,7 @@ export default function Default({ children, pages }: { children: ReactNode, page
 
   return (
     <div className="container">
-      <Header headpages={pages} />
+      <Header links={links} />
       <main>
         <div className="container">
           {loading ? <Loader /> : children}

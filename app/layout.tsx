@@ -9,7 +9,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const
     mongo = new Mongo("mongodb://localhost:27017", "portfolio"),
     datas = await mongo.db.collections(),
-    pages = (await datas[0].find().toArray())[0].headpages;
+    header = (await datas[0].find().toArray())[0].header;
 
   mongo.client.close();
 
@@ -17,7 +17,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <div>
-          <Default pages={pages}>
+          <Default links={header}>
             {children}
           </Default>
         </div>
