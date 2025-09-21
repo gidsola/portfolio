@@ -2,14 +2,14 @@
 Description=Portfolio Site Service
 
 [Service]
-ExecStart=/media/goodsie/1tb/repos/portfolio/main/index.mjs
+ExecStart=/path/to/file.ext
 Restart=always
-User=nobody
+User=user_with_oermission
 # Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
 Group=nogroup
 Environment=PATH=/usr/bin:/usr/local/bin
-Environment=NODE_ENV=production
-WorkingDirectory=/media/goodsie/1tb/repos/portfolio
+# Environment=NODE_ENV=production
+WorkingDirectory=/path/
 
 [Install]
 WantedBy=multi-user.target
