@@ -9,12 +9,12 @@ async function getStaticData(): Promise<SiteData> {
 
   for await (const collection of datas) {
     const
-      c = (await collection.find().toArray())[0],
-      pn = collection.collectionName,
-      k = Object.keys(c)[1],
-      v = Object.entries(c)[1];
-
-    data[pn] = { [k]: v[1] };
+      c = (await collection.find().toArray()),
+      pn = collection.collectionName;
+      for (const k of c) {
+        // console.log(pn, Object.entries(k)[1][0],Object.entries(k)[1][1]);
+        data[pn] = {...data[pn], [Object.entries(k)[1][0]]: Object.entries(k)[1][1]};
+      };
   };
   console.log("DATAS", data);
   return { ...data } as SiteData;

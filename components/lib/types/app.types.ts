@@ -62,6 +62,19 @@ interface ProjectPageData {
 };
 
 
+type Service = {
+  title: string;
+  description: string;
+  technologies: string[],
+  icon: string;
+}[];
+
+interface ServicesPageData {
+  intro: string;
+  offered: Service
+};
+
+
 
 type script = {
   title: string;
@@ -75,4 +88,5 @@ interface SiteData {
   projects: ProjectPageData;
   header: HeaderPageData;
   about: AboutPageData;
+  services: ServicesPageData;
 };
