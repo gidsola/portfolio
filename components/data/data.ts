@@ -1,4 +1,3 @@
-
 import Mongo from '@/main/mongodb/MongoConnect.mjs';
 
 async function getStaticData(): Promise<SiteData> {
@@ -16,7 +15,7 @@ async function getStaticData(): Promise<SiteData> {
         data[pn] = {...data[pn], [Object.entries(k)[1][0]]: Object.entries(k)[1][1]};
       };
   };
-  console.log("DATAS", data);
+  // console.log("DATAS", data);
   return { ...data } as SiteData;
 };
 

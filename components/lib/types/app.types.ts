@@ -76,10 +76,13 @@ interface ServicesPageData {
 
 
 
-type script = {
+type Scripts = {
   title: string;
   code: string;
   description: string;
+}[];
+interface EggPageData {
+  scripts: Scripts;
 };
 
 
@@ -89,4 +92,5 @@ interface SiteData {
   header: HeaderPageData;
   about: AboutPageData;
   services: ServicesPageData;
+  egg: EggPageData;
 };

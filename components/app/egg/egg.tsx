@@ -1,10 +1,6 @@
-// import React from 'react';
 import '@/css/egg.css';
 
-
-export default function Egg({ codeSnippets }: { codeSnippets: script[] }) {
-  // console.log(codeSnippets);
-
+export default function Egg({ pageData }: { pageData: EggPageData }) {
   return (
     <div className="egg-page">
       <div className="terminal-window">
@@ -25,14 +21,14 @@ export default function Egg({ codeSnippets }: { codeSnippets: script[] }) {
             <p className="tagline">This page is the closest representation of another site that I cannot remember and could not find. If someone knows which site I speak of please reach out. 😀</p>
           </div>
 
-          {codeSnippets.map((snippet, index) => (
+          {pageData.scripts.map((script, index) => (
             <div key={index} className="code-snippet">
               <div className="snippet-header">
-                <h2>{snippet.title}</h2>
-                <p className="description">{snippet.description}</p>
+                <h2>{script.title}</h2>
+                <p className="description">{script.description}</p>
               </div>
               <pre className="code-block">
-                <code>{snippet.code}</code>
+                <code>{script.code}</code>
               </pre>
             </div>
           ))}
