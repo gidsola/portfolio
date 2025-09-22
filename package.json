@@ -10,7 +10,6 @@
     "mongodb": "^6.19.0",
     "mysql2": "^3.14.5",
     "next": "^15.5.3",
-    "next-auth": "^5.0.0-beta.29",
     "node-loader": "^2.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
