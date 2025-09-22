@@ -2,9 +2,8 @@ import React from 'react';
 import '@/css/about.css';
 
 
+export default function About({ pageData }: { pageData: AboutPageData }) {
 
-
-export default function About({skills}:{skills:Skills}) {
   return (
     <div className="about-me">
       <div className="profile-card">
@@ -23,7 +22,7 @@ export default function About({skills}:{skills:Skills}) {
             <h2>About Me</h2>
             <p>
               Hello 😀, My name is Michael. </p>
-             <p> Proud Canadian, pancake perfectionist (ask me for the recipe), and a coding obsessive with a lifetime of building stuff. When I'm not wrestling with Next.js or geeking out over new tech, you'll find me turning random ideas into apps, fueled by coffee and a love for clean, functional code. 48 years young, still learning, and always shipping.
+            <p> Proud Canadian, pancake perfectionist (ask me for the recipe), and a coding obsessive with a lifetime of building stuff. When I'm not wrestling with Next.js or geeking out over new tech, you'll find me turning random ideas into apps, fueled by coffee and a love for clean, functional code. 48 years young, still learning, and always shipping.
             </p>
           </section>
 
@@ -41,7 +40,7 @@ export default function About({skills}:{skills:Skills}) {
           <section className="skills-section">
             <h2>Skills</h2>
             <div className="skills-grid">
-              {skills.map((skill, index) => (
+              {pageData.skills.map((skill, index) => (
                 <span key={index} className="skill-tag">{skill}</span>
               ))}
             </div>

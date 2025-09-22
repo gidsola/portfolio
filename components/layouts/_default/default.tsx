@@ -1,25 +1,14 @@
-"use client";
-
-import React, { useState, useEffect, ReactNode } from "react";
-import Loader from "@/loader";
+import { ReactNode } from "react";
 import Header from "@/layouts/_default/defaultheader";
 
-export default function Default({ children, links }: { children: ReactNode, links: HeaderLinks }) {
-  const
-    [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 3000);
-  }, []);
-
+export default function Default({ children, data }: { children: ReactNode, data: SiteData }) {
   return (
-    <div className="container">
-      <Header links={links} />
-      <main>
-        <div className="container">
-          {loading ? <Loader /> : children}
-        </div>
-      </main>
-    </div>
+    <>
+      <Header header={data["header"]} />
+      <>
+        {children}
+      </>
+    </>
   );
 };

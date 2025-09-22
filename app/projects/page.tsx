@@ -1,8 +1,9 @@
 import Projects from "@/app/projects/projects";
+import Data from '@/data/data';
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const data = await Data();
   return (
-    <Projects />
+    <Projects pageData={(await Data()).projects} />
   );
 };
-

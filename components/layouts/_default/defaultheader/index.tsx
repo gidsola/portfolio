@@ -2,8 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 
-export default function Header({links}:{links: HeaderLinks}) {
-
+export default function Header({ header }: { header: HeaderPageData }) {
   return (
     <header className="header">
       <div className="header-container">
@@ -32,7 +31,7 @@ export default function Header({links}:{links: HeaderLinks}) {
 
         <div className="nav-container">
           <ul className="nav-list">
-            {links.map(([name, path]) => (
+            {header.navlinks.map(([name, path]) => (
               <li key={name}>
                 <Link href={path} className="nav-link">
                   {name}

@@ -1,4 +1,5 @@
-import Egg, { script } from "@/app/egg/egg";
+import Egg from "@/app/egg/egg";
+import Data from '@/data/data';
 
 const snips: script[] = [
   {
@@ -91,7 +92,8 @@ fizzbuzz(100)`,
   }
 ];
 
-export default function EggPage() {
+export default async function EggPage() {
+  const data = await Data();
   return (
     <Egg codeSnippets={snips} />
   );

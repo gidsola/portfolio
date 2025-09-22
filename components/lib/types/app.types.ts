@@ -44,9 +44,24 @@ interface TierObject {
  * app pages
  */
 
-type HeaderLinks = [string, string][];
+type NavLinks = [string, string][]
+interface HeaderPageData {
+  navlinks: NavLinks;
+};
 
-type Skills=[string];
+
+type Skills = string[];
+interface AboutPageData {
+  skills: Skills;
+};
+
+
+type Repos = { url: string }[];
+interface ProjectPageData {
+  repos: Repos;
+};
+
+
 
 type script = {
   title: string;
@@ -54,5 +69,10 @@ type script = {
   description: string;
 };
 
-type Repos = {url: string}[];
 
+
+interface SiteData {
+  projects: ProjectPageData;
+  header: HeaderPageData;
+  about: AboutPageData;
+};

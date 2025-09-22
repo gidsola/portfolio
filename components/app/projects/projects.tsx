@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import '@/css/projects.css';
 
 
-export default function Projects({repos}:{repos: Repos}) {
+export default function Projects({ pageData }: { pageData: ProjectPageData }) {
   const
     [projects, setProjects] = useState<any[]>([]),
     [loading, setLoading] = useState(true),
@@ -14,7 +14,7 @@ export default function Projects({repos}:{repos: Repos}) {
     const getProjects = async () => {
       try {
         const projectsData = await Promise.all(
-          repos.map(async (repo) => {
+          pageData.repos.map(async (repo) => {
             const response = await fetch(repo.url);
             if (!response.ok) throw new Error('Failed to fetch');
             // console.log(await response.json());
