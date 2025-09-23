@@ -1,25 +1,6 @@
-// app pages
-
-/**
- * Header
+/***************************************
+ * GtHub
  */
-type NavLinks = [string, string]
-interface HeaderPageData {
-  navlinks: NavLinks[];
-};
-
-/**
- * About
- */
-type Skills = string;
-interface AboutPageData {
-  skills: Skills[];
-};
-
-/**
- * Projects
- */
-type Repo = { url: string };
 type GithubProject = {
   id: number,
   node_id: string
@@ -137,6 +118,34 @@ type GithubProject = {
   network_count: number,
   subscribers_count: number
 }
+
+
+
+/************************************************
+ * Site Pages
+ */
+
+/**
+ * Header
+ */
+type NavLinks = [string, string]
+interface HeaderPageData {
+  navlinks: NavLinks[];
+};
+
+/**
+ * About
+ */
+type Skills = string;
+interface AboutPageData {
+  skills: Skills[];
+};
+
+/**
+ * Projects
+ */
+type Repo = { url: string };
+
 
 interface ProjectPageData {
   repos: Repo[];
