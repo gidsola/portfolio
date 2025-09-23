@@ -1,7 +1,5 @@
 import { MongoClient, MongoServerError, ReadPreference } from 'mongodb';
 
-
-
 class MongoConnect {
 
   /**
