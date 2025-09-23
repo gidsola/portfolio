@@ -30,7 +30,7 @@ class MicroService extends EventEmitter {
   constructor(DOMAIN) {
     super();
 
-    this.development = DOMAIN === 'localhost';
+    this.development = DOMAIN === process.env.DEV;
 
     this._nextServerOptions = {
       rejectUnauthorized: false,
@@ -42,24 +42,24 @@ class MicroService extends EventEmitter {
 
     this._httpsServerOptions = {
       key: this.development
-        ? readFileSync(process.cwd() + `/main/ssl/localhost.key`)
-        : readFileSync(process.cwd() + `/main/ssl/private.key`),
+        ? readFileSync(process.env.DIR_SSL + "localhost.key")
+        : readFileSync(process.env.DIR_SSL + "private.key"),
 
       cert: this.development
-        ? readFileSync(process.cwd() + `/main/ssl/localhost.crt`)
-        : readFileSync(process.cwd() + `/main/ssl/certificate.crt`),
+        ? readFileSync(process.env.DIR_SSL + "localhost.crt")
+        : readFileSync(process.env.DIR_SSL + "certificate.crt"),
 
       ca: this.development
         ? undefined
-        : [readFileSync(process.cwd() + `/main/ssl/ca_bundle.crt`)],
+        : [readFileSync(process.env.DIR_SSL + "ca_bundle.crt")],
 
       keepAlive: false,
       requestCert: false,
       rejectUnauthorized: false,
       insecureHTTPParser: false,
-      ciphers: "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
-      maxVersion: "TLSv1.3",
-      minVersion: "TLSv1.2",
+      ciphers: process.env.TLS_CIPHERS,
+      maxVersion: process.env.TLS_MINVERSION,
+      minVersion: process.env.TLS_MAXVERSION,
       enableTrace: false,
       requestTimeout: 30000,
       sessionTimeout: 120000
