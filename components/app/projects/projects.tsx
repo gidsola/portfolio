@@ -1,53 +1,6 @@
-"use client";
-
-import { useState, useEffect } from 'react';
 import '@/css/projects.css';
 
-
-export default function Projects({ pageData}: { pageData: ProjectPageData }) {
-  
-  const
-    [projects, setProjects] = useState<any[]>([]),
-    [loading, setLoading] = useState(true),
-    [error, setError] = useState(null);
-
-
-
-  // useEffect(() => {
-  //   const getProjects = async () => {
-  //     try {
-  //       const projectsData = await Promise.all(
-  //         pageData.repos.map(async (repo) => {
-
-  //           const response = await fetch(repo.url, {
-  //             method: 'GET',
-  //             headers: {
-  //               "Authorization": `Bearer ${key}`,
-  //               "X-GitHub-Api-Version": "2022-11-28"
-  //              }
-  //           });
-
-  //           if (!response.ok) throw new Error('Failed to fetch');
-  //           // console.log(await response.json());
-  //           return await response.json();
-  //         })
-  //       );
-  //       // console.log(projectsData);
-  //       setProjects(projectsData);
-  //       setLoading(false);
-  //     }
-  //     catch (e: any) {
-  //       setError(e.message);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   // getProjects();
-  // }, []);
-
-  // if (loading) return <div className="loading">Loading projects...</div>;
-  // if (error) return <div className="error">Error: {error}</div>;
-
+export default function Projects({ pageData }: { pageData: ProjectPageData }) {
   return (
     <div className="page">
       <div className="page-container">
@@ -94,4 +47,3 @@ export default function Projects({ pageData}: { pageData: ProjectPageData }) {
     </div>
   );
 };
-
