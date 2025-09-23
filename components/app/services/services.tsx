@@ -9,16 +9,16 @@ export default function Services({ pageData }: { pageData: ServicesPageData }) {
         <div className="grid">
 
           {pageData.offered.map((service, index) => (
-            <div key={index} className="card">
-              <div className="service-icon">{service.icon}</div>
-              <h3 className="service-title">{service.title}</h3>
-              <p className="service-description">{service.description}</p>
+            <div key={index} className="card cardhover">
+              <div className="card-icon">{service.icon}<h3 className="card-title">{service.title}</h3></div>
+              
+              <p className="card-description">{service.description}</p>
 
-              <div className="service-technologies">
+              <div className="card-technologies">
                 <h4>Technologies</h4>
-                <div className="tech-tags">
+                <div className="card-tags">
                   {service.technologies.map((tech, techIndex) => (
-                    <span key={techIndex} className="tech-tag">{tech}</span>
+                    <span key={techIndex} className="card-tag">{tech}</span>
                   ))}
                 </div>
               </div>
@@ -26,7 +26,7 @@ export default function Services({ pageData }: { pageData: ServicesPageData }) {
           ))}
         </div>
 
-        <div className="services-cta">
+        <div className="cta">
           <h2>Ready to start your project?</h2>
           <p>From initial concept to final deployment, I can help bring your ideas to life.</p>
           <a href="/contact" className="btn btn-primary">Get in Touch</a>

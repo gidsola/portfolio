@@ -4,3 +4,4 @@ logs/
 *.lab
 config.json
 main/ssl/*
+.env

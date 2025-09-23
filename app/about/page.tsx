@@ -3,6 +3,6 @@ import Data from '@/data/data';
 
 export default async function AboutPage() {
   return (
-    <About pageData={(await Data()).about} />
+      <About pageData={(await Data()).about} />
   );
 };

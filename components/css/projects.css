@@ -32,12 +32,12 @@
   object-fit: cover;
 }
 
-.project-content {
-  padding: 1.5rem;
+/* .project-content {
+  padding: 1.5rem; 
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-}
+} */
 
 .project-title {
   color: #444147;
@@ -61,10 +61,11 @@
 }
 
 .project-language {
-  background-color: #f0f0f0;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  color: #d88f31;
+  background-color: #56565b;
+  color: #e8ab5d;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
@@ -73,6 +74,7 @@
 }
 
 .project-link {
+  color: white !important;
   margin-top: auto;
   width: 100%;
   text-align: center;

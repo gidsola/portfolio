@@ -1,3 +1,4 @@
+
 import { ReactNode } from 'react';
 import Default from "@/layouts/_default/default";
 import "@/layouts/global.css";

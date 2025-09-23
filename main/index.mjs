@@ -1,4 +1,4 @@
-
+import 'dotenv/config';
 import { readFile } from 'fs/promises';
 import { OnSocketBanner } from './banners.mjs';
 // import Mongo from './mongodb/MongoConnect.mjs';
