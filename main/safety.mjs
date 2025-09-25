@@ -1,33 +1,47 @@
-
+import { IncomingMessage, ServerResponse } from 'http';
 import logger from './logger.mjs';
 import chalk from 'chalk';
-// TODO: re-write for mongo
-//   AND
-// look at access methods. currently loading tables and updating active data
-
-const ipBlockList = [{part:"999.999.999"}];//(await sqlSet('SELECT * FROM ip_blocklist', [])).map((x/*: any*/) => x.part);
-const urlBlockList = [{url: "some/path"}];//(await sqlSet('SELECT * FROM url_blocklist', [])).map((x/*: any*/) => x.url);
-
-const RateLimitBucket = new Map();
-const rateLimitIpBlockList/*: string[]*/ = [];
 
 /**
+ * @typedef {{banExpiry: number, reason: string}} BanData
  * 
- * @param {string} method 
- * @param {string} address 
- * @param {string} url 
- * @returns 
+ * @typedef {{count: number, lastSeen: number}} LimitData
+ * 
+ * @typedef {ServerResponse<IncomingMessage>} Response
+ * 
  */
-export async function isBlocked(method/*: string*/, address/*: string*/, url/*: string*/) {
-  if (ipBlockList.some((x/*: string*/) => console.log("ip",address?.match(x)))) {
 
-    return true;
-  }
-  
-  if (urlBlockList.some((x/*: string*/) => console.log("url",url?.match(x)))) {
-    return true;
-  }
-  return false;
+
+const
+  urlBlockList = [{ url: "/admin" }],
+  ipBlockList = new Map(),
+  RateLimitBucket = {},
+
+  RATE_LIMIT = 10,
+  INACTIVITY_LENGTH = 10000,
+  BAN_LENGTH = 300000,
+  SWEEP_INTERVAL = 60000;
+
+  // maintenance();
+// const now = Date.now();
+
+function logAccess(type, method, address, url, a = null) {
+
+  const
+    owner = "@SAFETY",
+    msgString = () => `${chalk.bgBlueBright(address)}: (Method: ${method}, URL: ${chalk.bgBlue(url)}`,
+    blockType = {
+      "url": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED URL]")}] => ${msgString()}\n`),
+
+      "ip": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED IP]")}] => ${msgString()}\n`),
+
+      "ban": (a) => logger(owner).warn(`[${chalk.bgRedBright("BANNED")}] => Banned until ${a}\n`)
+    };
+
+  blockType[type] ? blockType[type](a) : logger("SYSTEM").warn("Unknown Access Log Type..")
+
+
+  // logger('SAFETY').info(`[BLOCKED] IP ${address} banned until ${new Date(ipBanData.banExpiry)}`);
 };
 
 /**
@@ -37,59 +51,143 @@ export async function isBlocked(method/*: string*/, address/*: string*/, url/*: 
  * @param {string} url 
  * @returns 
  */
-export async function isRateLimited(method/*: string*/, address/*: string*/, url/*: string*/)/*: boolean */ {
-  const allowedRateLimit = 10;
-  const releaseTime = 5000;
-  const inactivityTime = 10000;
-  const key = `${url}:${address}`;
-  const now = Date.now();
+export async function isBlocked(method, address, url) {
+  try {
+    const now = Date.now();
 
-  if (rateLimitIpBlockList.includes(address)) {
-    const blockTime = RateLimitBucket.get(address);
-    if (blockTime && now - blockTime < releaseTime) return true;
-    else {
-      rateLimitIpBlockList.splice(rateLimitIpBlockList.indexOf(address), 1);
-      RateLimitBucket.delete(address);
-    }
+    if (urlBlockList.some((x) => url === x.url)) {
+      logAccess("url", method, address, url);
+      return true;
+    };
+
+    /**
+     * @type {BanData}
+     */
+    const ipBanData = ipBlockList.get(address);
+    if (ipBanData?.banExpiry > now) {
+      logAccess("ip", method, address, url);
+      return true;
+    };
+
+    return false;
+  }
+  catch (e) {
+    return true; // just incase the fail is due to the user.
+  };
+};
+
+
+/**
+ * 
+ * @param {string} address
+ * @param {BanData} banData
+ */
+async function setIPBlock(address, banData) {
+  try {
+    ipBlockList.set(address, { ...banData });
+    logAccess("ip", method, address, url);
+    return true;
+  }
+  catch (/**@type {any}*/e) {
+    e instanceof Error
+      ? logger().error("Error setting IP block", e.message)
+      : logger().error("Error setting IP block", e)
+    return false;
+  };
+};
+
+
+/**
+ * 
+ * @param {string} method 
+ * @param {string} address 
+ * @param {string} url 
+ * @returns 
+ */
+export async function isRateLimited(method, address, url) {
+  const
+    now = Date.now(),
+    key = address + ":" + url,
+    /**@type {BanData}*/ipBanData = ipBlockList.get(address);
+
+  if (ipBanData?.banExpiry > now) {
+    logAccess("ban", method, address, url, new Date(ipBanData.banExpiry));
+    return true;
   };
 
-  if (RateLimitBucket.has(key)) {
-    const requestCount = RateLimitBucket.get(key);
-    if (requestCount >= allowedRateLimit) {
-      rateLimitIpBlockList.push(address);
-      RateLimitBucket.set(address, now);
-      logger.info(chalk.redBright.bgBlack('Rate Limited: ') + chalk.cyanBright(method, address, url));
-      return true;
-    } else RateLimitBucket.set(key, requestCount + 1);
-  } else RateLimitBucket.set(key, 1);
+  /**
+   * @type {LimitData}
+   */
+  const rateLimitData = RateLimitBucket[key] || { count: 0, lastSeen: now };
 
-  setTimeout(() => {
-    if (RateLimitBucket.has(key)) RateLimitBucket.delete(key);
-  }, inactivityTime);
+  rateLimitData.count++;
+  rateLimitData.lastSeen = now;
+  RateLimitBucket[key] = rateLimitData;
+
+  if (rateLimitData.count > RATE_LIMIT) {
+    return await setIPBlock(address, {
+      banExpiry: now + BAN_LENGTH,
+      reason: `Exceeded ${RATE_LIMIT} requests to ${url}`,
+    });
+  };
+
+
 
   return false;
 };
 
 
-/*
--- `local`.ip_blocklist definition
+/**
+ * @param {Response} res
+ * @param {number} statusCode
+ * @param {string} message
+ *
+ */
+export async function WriteAndEnd(res, statusCode, message) {
+  return res
+    .writeHead(statusCode, {
+      'Content-Length': Buffer.byteLength(message),
+      'Content-Type': 'text/plain'
+    })
+    .end(message);
+};
 
-CREATE TABLE `ip_blocklist` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `part` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ip_blocklist_id_IDX` (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/**
+ * @param {IncomingMessage} req
+ * @param {Response} res
+ *
+ */
+export async function isAllowed(req, res) {
+  try {
+    if (!req.method || !req.url || req.method === "POST") return res.end(); // dont forget posts are blocked..
+
+    if ((await isRateLimited(req.method, req.headers['x-forwarded-for'] /*as string*/ || req.socket.remoteAddress, req.url))) {
+      return WriteAndEnd(res, 429, 'Too many requests');
+    };
+
+    if ((await isBlocked(req.method, req.socket.remoteAddress, req.url))) {
+      return WriteAndEnd(res, 403, `Access Denied`);
+    };
+
+    return true;
+
+  } catch (e) {
+    logger().error(e);
+    return WriteAndEnd(res, 500, 'Internal Server Error');
+  };
+};
 
 
--- `local`.url_blocklist definition
-
-CREATE TABLE `url_blocklist` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `url_blocklist_id_IDX` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-*/
-
+export function maintenance() {
+  logger('@MAINTENANCE').info("Initializing RateLimit Bucket Maintenance..")
+  setInterval(() => {
+    logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");
+    const now = Date.now();
+    for (const [key, data] of Object.entries(RateLimitBucket)) {
+      if (now - data.lastSeen > INACTIVITY_LENGTH) {
+        delete RateLimitBucket[key];
+      }
+    }
+  }, SWEEP_INTERVAL);
+};

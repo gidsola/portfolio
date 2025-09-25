@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 // import { URL } from 'url';
 import Next from 'next';
 
-import { isBlocked, isRateLimited } from './safety.mjs';
+import { isAllowed, WriteAndEnd, maintenance } from './safety.mjs';
 import logger from './logger.mjs';
 
 class MicroService extends EventEmitter {
@@ -85,6 +85,7 @@ class MicroService extends EventEmitter {
    * @private
    */
   async init() {
+    maintenance();
     await this.NextServer.prepare();
     await new Promise((resolve) => {
 
@@ -92,7 +93,7 @@ class MicroService extends EventEmitter {
       this.NetService
         .on('error', async function serviceError(err) {
           // todo
-          logger.error('NetService Error:', err);
+          logger().error('NetService Error:', err);
         })
         .on('clientError', async function clientError(err, socket) {
           socket.destroy(err);
@@ -102,7 +103,7 @@ class MicroService extends EventEmitter {
         })
         // todo
         .on('stream', async function rcvdStream(stream, headers) {
-          logger.info('stream');
+          logger().info('stream');
         })
         .listen(this._nextServerOptions.port, resolve);
 
@@ -113,7 +114,7 @@ class MicroService extends EventEmitter {
 
   /**
    * @param {IncomingMessage} req
-   * @param {ServerResponse} res
+   * @param {ServerResponse<IncomingMessage>} res
    *
    * @private
    */
@@ -123,7 +124,7 @@ class MicroService extends EventEmitter {
       return await this.NextRequestHandler(req, res);
     } catch (e) {
       console.error(e);
-      logger.error('Error handling web request:', e);
+      logger().error('Error handling web request:', e);
       return WriteAndEnd(res, 500, 'Internal Server Error');
     };
   };
@@ -131,7 +132,7 @@ class MicroService extends EventEmitter {
 
   /**
    * @param {IncomingMessage} req
-   * @param {ServerResponse} res
+   * @param {ServerResponse<IncomingMessage>} res
    *
    * @private
    */
@@ -154,52 +155,31 @@ class MicroService extends EventEmitter {
 
     }
     catch (e) {
-      logger.error(e);
+      logger().error(e);
       return WriteAndEnd(res, 500, 'Internal Server Error');
     };
   };
 
 
-  /**
-   * @param {IncomingMessage} req
-   * @param {ServerResponse} res
-   *
-   * @private
-   */
-  async isAllowed(req, res) {
-    try {
-      if (!req.method || !req.url) return res.end();
-      // if (await isBlocked(req.method, req.socket.remoteAddress, req.url)) {
-      //   console.log("ms");
-      //   return WriteAndEnd(res, 403, `Access Denied`);
-      // }
-      // if (await isRateLimited(req.method, req.headers['x-forwarded-for'] /*as string*/ || req.socket.remoteAddress, req.url)) {
-      //   return WriteAndEnd(res, 429, 'Too many requests');
-      // }
-      return true;
-
-    } catch (e) {
-      logger.error(e);
-      return WriteAndEnd(res, 500, 'Internal Server Error');
-    };
-  };
+  
 
 
   /**
    * @param {IncomingMessage} req
-   * @param {ServerResponse} res
+   * @param {ServerResponse<IncomingMessage>} res
    *
    * @private
+   * @returns {Promise<void | ServerResponse<IncomingMessage>>}
    */
   async ServiceResponseHandler(req, res) {
     try {
-      const allowedResponse = await this.isAllowed(req, res);
+      const allowedResponse = await isAllowed(req, res);
       return typeof allowedResponse === 'boolean'
         ? await this.processRequest(req, res)
         : allowedResponse;
 
     } catch (e) {
-      logger.error('Error:', e);
+      logger().error('Error:', e);
       console.log(e);
       return WriteAndEnd(res, 500, 'Internal Server Error');
     };
@@ -210,7 +190,7 @@ export default MicroService;
 
 
 /**
- * @param {ServerResponse} res
+ * @param {ServerResponse<IncomingMessage>} res
  * 
  * @private
  */
@@ -232,18 +212,3 @@ function setHeaders(res) {
 };
 
 
-/**
- * @param {ServerResponse} res
- * @param {number} statusCode
- * @param {string} message
- *
- * @private
- */
-function WriteAndEnd(res, statusCode, message) {
-  return res
-    .writeHead(statusCode, {
-      'Content-Length': Buffer.byteLength(message),
-      'Content-Type': 'text/plain'
-    })
-    .end(message);
-};

@@ -13,10 +13,10 @@ const
     const colorize = levelColors[level] || ((/** @type {any} */text) => text);
     return `${chalk.blue(timestamp)} [${chalk.magenta(label)}] ${colorize(level)}: ${chalk.rgb(204, 51, 153)(message)}`;
   }),
-  logger = winston.createLogger({
+  logger = (owner=null) => winston.createLogger({
     level: 'info',
     format: combine(
-      label({ label: '@goodsie' }),
+      label({ label: owner ?? '@SYSTEM' }),
       timestamp(),
       myFormat
     ),

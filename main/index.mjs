@@ -11,7 +11,7 @@ try {
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const service = new MicroService(process.env.DOMAIN);
-  service.on('ready', () => logger.info("    System Ready"));
+  service.on('ready', () => logger().info("    System Ready\n\n"));
 
   readline.createInterface({
     input: process.stdin,
@@ -28,7 +28,7 @@ try {
 
 } catch (e) {
   console.error(e);
-  logger.error('Construction Error:', e);
+  logger().error('Construction Error:', e);
 };
 
 
@@ -41,25 +41,25 @@ async function gracefulShutdown(Service) {
   try {
     Service.NetService.closeAllConnections();
     await Service.NextServer.close();
-    logger.info(chalk.yellowBright('<< NetService Offline >>'));
+    logger().info(chalk.yellowBright('<< NetService Offline >>'));
 
     Service.NetService.close(() => {
-      logger.info(chalk.greenBright('<< Exiting Normally >>'));
+      logger().info(chalk.greenBright('<< Exiting Normally >>'));
       process.exit(0);
     });
 
   }
   catch (e) {
-    logger.error('Error closing NetService:', e);
+    logger().error('Error closing NetService:', e);
     Service.NetService.close(() => {
-      logger.info(chalk.redBright('Exiting with code: 1 ->>'));
+      logger().info(chalk.redBright('Exiting with code: 1 ->>'));
       process.exit(1);
     });
   };
 
   // force close connected clients
   setTimeout(() => {
-    logger.info(chalk.yellowBright('Force closing connections..'));
+    logger().info(chalk.yellowBright('Force closing connections..'));
     process.exit(0);
   }, 10000);
 };
