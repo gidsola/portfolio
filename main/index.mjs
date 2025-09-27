@@ -62,5 +62,5 @@ async function gracefulShutdown(Service) {
   setTimeout(() => {
     logger().info(chalk.yellowBright('Force closing connections..'));
     process.exit(0);
-  }, 10000);
+  }, 5000);
 };
