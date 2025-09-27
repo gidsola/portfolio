@@ -1,13 +1,17 @@
-import React from 'react';
-import '@/css/about.css';
 
+import '@/css/about.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "About Me"
+};
 
 export default function About({ pageData }: { pageData: AboutPageData }) {
 
   return (
     <div className="about-me">
       <div className="profile-card">
-        <div className="profile-header">
+        <div className="card-header">
           <img
             src="/images/mg.jpeg"
             alt="Profile"
@@ -41,10 +45,19 @@ export default function About({ pageData }: { pageData: AboutPageData }) {
             <h2>Skills</h2>
             <div className="skills-grid">
               {pageData.skills.map((skill, index) => (
-                <span key={index} className="skill-tag">{skill}</span>
+                <span key={index} className="card-tag">{skill}</span>
               ))}
             </div>
           </section>
+
+          <section className="contact-section">
+            <h2>Resume</h2>
+            <div className="contact-info">
+              <p>Online Version: <a href="/resume">Resume</a></p>
+              <p>PDF: <a href="/files/resume/michael-goodie-resume.pdf" target="_blank">Download</a></p>
+              <p>DOCX: <a href="/files/resume/michael-goodie-resume.docx" target="_blank">Download</a></p>
+            </div>
+          </section> 
 
           <section className="contact-section">
             <h2>Get In Touch</h2>

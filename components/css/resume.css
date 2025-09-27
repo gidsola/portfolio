@@ -13,20 +13,23 @@
 }
 
 .contact-icon {
-  color: var(--primary-color);
+  color: var(--primary-blue);
 }
 
 .contact-link {
-  color: var(--text-primary);
+  color: var(--primary-text);
   text-decoration: none;
 }
 
 .contact-link:hover {
-  color: var(--primary-color);
+  color: var(--primary-blue);
   text-decoration: underline;
 }
 
 .section {
+  background: var(--dark-card-background);
+  border-radius: 1rem;
+  padding: 1rem;
   margin-bottom: 3rem;
 }
 
@@ -45,22 +48,10 @@
 .skill-category-title {
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: var(--primary-text);
 }
 
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
 
-.skill-tag {
-  background-color: var(--background-alt);
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
 
 .projects-grid {
   display: grid;
@@ -68,7 +59,7 @@
 }
 
 .project-card {
-  background-color: var(--card-background);
+  background: var(--dark-card-background);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -84,12 +75,12 @@
 .project-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-text);
   margin: 0;
 }
 
 .project-link {
-  color: var(--primary-color);
+  color: var(--primary-blue);
   text-decoration: none;
   font-size: 0.9rem;
 }
@@ -127,7 +118,7 @@
 
 .project-bullet:before {
   content: "•";
-  color: var(--primary-color);
+  color: var(--primary-blue);
   position: absolute;
   left: -0.75rem;
 }
@@ -138,7 +129,7 @@
 }
 
 .experience-item {
-  background-color: var(--card-background);
+  background: var(--dark-card-background);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -154,7 +145,7 @@
 .experience-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-text);
   margin: 0;
 }
 
@@ -183,7 +174,7 @@
 
 .experience-bullet:before {
   content: "•";
-  color: var(--primary-color);
+  color: var(--primary-blue);
   position: absolute;
   left: -0.75rem;
 }
@@ -198,7 +189,7 @@
 .education-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-text);
   margin: 0 0 0.25rem;
 }
 
@@ -235,7 +226,7 @@
 .strength-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--primary-text);
   margin: 0 0 0.5rem;
 }
 
@@ -243,14 +234,4 @@
   margin: 0;
   color: var(--text-secondary);
   font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .strengths-grid {
-    grid-template-columns: 1fr;
-  }
 }

@@ -1,9 +1,14 @@
 
-// import React from 'react';
-import '@/css/home.css';
 
+import '@/css/home.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Home"
+};
 
 export default function Home(){
+  
   return (
     <div className="homepage">
       <div className="hero-section">

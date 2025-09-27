@@ -6,9 +6,7 @@ export default function Default({ children, data }: { children: ReactNode, data:
   return (
     <>
       <Header header={data["header"]} />
-      <>
         {children}
-      </>
     </>
   );
 };

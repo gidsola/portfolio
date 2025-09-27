@@ -1,14 +1,21 @@
-
-import { ReactNode } from 'react';
 import Default from "@/layouts/_default/default";
-import "@/layouts/global.css";
-import Data from '@/data/data';
+import "@/css/global.css"; import Data from '@/data/data';
+import { metadata } from '@/components/metadata/metadata';
+// import { Metadata } from 'next';
+export {metadata}
 
+// export const metadata: Metadata = {
+//   title: {
+//     template: "%s | Goodsie Dot C Eh",
+//     default:'Goodsie Dot C Eh'
+//   }
+// };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body >
         <div>
           <Default data={(await Data())}>
             {children}

@@ -1,7 +1,30 @@
+"use client";
 import '@/css/contact.css';
 import { FaEnvelope, FaLinkedin, FaGithub, FaPaperPlane } from 'react-icons/fa';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Contact"
+};
 
 export default function Contact() {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    try{e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    console.log('Form submitted:', formData.entries());
+
+
+    // sendEmail(data);
+    // sendSocketMessage(data);
+
+    e.currentTarget.reset();
+  }catch(e){
+    console.log("failed", e);
+  }
+  };
+
   return (
     <div className="page">
       <div className="page-container">
@@ -11,7 +34,9 @@ export default function Contact() {
         </p>
 
         <div className="contact-container">
-          <div className="card contact-card">
+
+          {/* Contact Info Card */}
+          <div className="contact-info-card">
             <h2 className="contact-section-title">
               <FaEnvelope className="contact-icon" /> Contact Information
             </h2>
@@ -28,10 +53,20 @@ export default function Contact() {
             <div className="info-item">
               <h3 className="info-title">Social</h3>
               <div className="social-links">
-                <a href="https://www.linkedin.com/in/michael-goodie/" className="social-link" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://www.linkedin.com/in/michael-goodie/"
+                  className="social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FaLinkedin className="social-icon" /> LinkedIn
                 </a>
-                <a href="https://github.com/gidsola" className="social-link" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com/gidsola"
+                  className="social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FaGithub className="social-icon" /> GitHub
                 </a>
               </div>
@@ -43,12 +78,13 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="card">
+          {/* Contact Form Card */}
+          <div className="contact-form-card">
             <h2 className="contact-section-title">
               <FaPaperPlane className="contact-icon" /> Send Me a Message
             </h2>
 
-            <form className="contact-form">
+            <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name" className="form-label">Name</label>
                 <input

@@ -35,7 +35,7 @@ function logAccess(type, method, address, url, a = null) {
 
       "ip": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED IP]")}] => ${msgString()}\n`),
 
-      "ban": (a) => logger(owner).warn(`[${chalk.bgRedBright("BANNED")}] => Banned until ${a}\n`)
+      "ban": (a) => logger(owner).warn(`[${chalk.bgRedBright("BANNED")}] => ${chalk.bgBlueBright(address)} until ${a}\n`)
     };
 
   blockType[type] ? blockType[type](a) : logger("SYSTEM").warn("Unknown Access Log Type..")
@@ -53,6 +53,7 @@ function logAccess(type, method, address, url, a = null) {
  */
 export async function isBlocked(method, address, url) {
   try {
+    if(address.includes("::1")) return false;
     const now = Date.now();
 
     if (urlBlockList.some((x) => url === x.url)) {
@@ -105,6 +106,7 @@ async function setIPBlock(address, banData) {
  * @returns 
  */
 export async function isRateLimited(method, address, url) {
+  if(address.includes("::1")) return false;
   const
     now = Date.now(),
     key = address + ":" + url,

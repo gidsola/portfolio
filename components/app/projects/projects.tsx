@@ -8,8 +8,8 @@ export default function Projects({ pageData }: { pageData: ProjectPageData }) {
         <div className="grid">
 
           {pageData.projects && pageData.projects.map((project) => (
-            <div key={project.id} className="card cardhover">
-              <div className="project-image">
+            <div key={project.id} className="card project-card cardhover">
+              <div className="card-header project-header">
                 {project.owner.avatar_url && (
                   <img
                     src={project.owner.avatar_url}
@@ -20,8 +20,8 @@ export default function Projects({ pageData }: { pageData: ProjectPageData }) {
               </div>
 
               <div className="container">
-                <h3 className="project-title">{project.name}</h3>
-                <p className="project-description">
+                <h3 className="card-title">{project.name}</h3>
+                <p className="card-description">
                   {project.description || 'No description available'}
                 </p>
 
