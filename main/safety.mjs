@@ -181,7 +181,7 @@ export async function isAllowed(req, res) {
 };
 
 
-export function maintenance() {
+export async function maintenance() {
   logger('@MAINTENANCE').info("Initializing RateLimit Bucket Maintenance..")
   setInterval(() => {
     logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");

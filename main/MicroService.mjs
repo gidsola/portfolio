@@ -30,7 +30,8 @@ class MicroService extends EventEmitter {
   constructor(DOMAIN) {
     super();
 
-    this.development = DOMAIN === process.env.DEV;
+    /**@type {boolean} */
+    this.development = process.env.DEV === DOMAIN;
 
     this._nextServerOptions = {
       rejectUnauthorized: false,
@@ -58,8 +59,8 @@ class MicroService extends EventEmitter {
       rejectUnauthorized: false,
       insecureHTTPParser: false,
       ciphers: process.env.TLS_CIPHERS,
-      maxVersion: process.env.TLS_MINVERSION,
-      minVersion: process.env.TLS_MAXVERSION,
+      maxVersion: process.env.TLS_MAXVERSION,
+      minVersion: process.env.TLS_MINVERSION,
       enableTrace: false,
       requestTimeout: 30000,
       sessionTimeout: 120000
@@ -85,7 +86,7 @@ class MicroService extends EventEmitter {
    * @private
    */
   async init() {
-    maintenance();
+    await maintenance();
     await this.NextServer.prepare();
     await new Promise((resolve) => {
 
