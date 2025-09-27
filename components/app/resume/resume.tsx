@@ -96,7 +96,7 @@ export default function Resume() {
         {/* About Section */}
         <div className="section">
           <h2 className="section-subtitle">Backend Developer | Node.js • Docker • Real-Time Systems</h2>
-          <p className="services-intro">
+          <p className="section-intro">
             Results-driven backend developer specializing in Node.js, Docker, and event-driven architectures.
             Adept at building scalable APIs, automated deployment systems, and real-time applications with a focus on
             performance, security, and maintainability.

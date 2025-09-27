@@ -49,6 +49,35 @@ body {
   line-height: 1.6;
 }
 
+.justify-content {
+  display: flex;
+  justify-content: center;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.mb-3 {
+  margin-bottom: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 4rem;
+}
+
+.w-300 {
+  max-width: 300px;
+}
+
+.w-600 {
+  max-width: 600px;
+}
+
 /* a,
 a:visited {
   color: var(--primary-orange);
@@ -58,6 +87,7 @@ h2 {
   margin-bottom: 1.5rem;
   font-size: 1.3rem;
 }
+
 h2 {
   color: var(--primary-text);
   margin-bottom: 1rem;
@@ -334,6 +364,7 @@ h2:after {
   color: var(--primary-text);
   margin-bottom: 1rem;
 }
+
 .cta h2:after {
   width: 100%;
 }
@@ -367,28 +398,20 @@ h2:after {
 }
 
 @media (max-width: 768px) {
-  .leaf-hamburger {
-    display: block;
-  }
 
-  .nav-container {
-    display: none;
-  }
-
+  .leaf-hamburger,
+  .mobile-logo,
   .mobile-nav-container {
     display: block;
   }
 
+  .desktop-logo,
+  .nav-container {
+    display: none;
+  }
+
   .header-container {
     justify-content: space-between;
-  }
-
-  .mobile-logo {
-    display: block;
-  }
-
-  .desktop-logo {
-    display: none;
   }
 
   .nav-list {
@@ -399,15 +422,24 @@ h2:after {
     padding: 1rem;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
+  .education-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .education-dates {
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 
   .contact-content,
   .contact-container,
+  .education-grid,
+  .grid,
   .skills-grid,
   .strengths-grid,
-  .services-grid {
+  .services-grid,
+  .resources-grid {
     grid-template-columns: 1fr;
   }
 
@@ -419,6 +451,15 @@ h2:after {
   .projects-container,
   .services-container {
     padding: 0 1rem;
+  }
+
+  .section-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    color: var(--primary-text);
+    font-size: 1.1rem;
+    line-height: 1.7;
   }
 
   .hero-image {
