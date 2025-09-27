@@ -24,7 +24,7 @@ export default function Contact() {
     console.log("failed", e);
   }
   };
-
+ 
   return (
     <div className="page">
       <div className="page-container">
