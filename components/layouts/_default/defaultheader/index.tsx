@@ -51,7 +51,10 @@ export default function Header({ header }: { header: HeaderPageData }) {
             <ul className="mobile-nav-list">
               {header.navlinks.map(([name, path]) => (
                 <li key={name}>
-                  <Link href={path} className="mobile-nav-link">
+                  <Link
+                    href={path}
+                    className="mobile-nav-link"
+                    onClick={() => setIsMobileMenuOpen(false)}>
                     {name}
                   </Link>
                 </li>
