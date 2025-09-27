@@ -190,30 +190,44 @@ class Safety {
   };
 
 
-  async maintenance() {
-    logger('@MAINTENANCE').info("Initializing RateLimit Bucket Maintenance..")
+  maintenance() {
+    logger('@MAINTENANCE').info("Initializing maintenance...");
     this.sweeper = setInterval(() => {
-      logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");
       const now = Date.now();
+      if (process.env.DEBUG === "true")
+        logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");
+      
       for (const [key, data] of Object.entries(this.RateLimitBucket)) {
         if (now - data.lastSeen > this.INACTIVITY_LENGTH) {
           delete this.RateLimitBucket[key];
         }
-      }
+      };
+
+      for (const [ip, banData] of this.ipBlockList.entries()) {
+        if (banData.banExpiry <= now) {
+          this.ipBlockList.delete(ip);
+        }
+      };
+
+      if (this.RateLimitBucket.size > 10000) {
+        const oldestKey = [...this.RateLimitBucket.keys()][0];
+        this.RateLimitBucket.delete(oldestKey);
+      };
+
     }, this.SWEEP_INTERVAL);
   };
 
 
   async cleanup() {
-    return await new Promise((t, f) => {
+    return new Promise((resolve, reject) => {
       try {
-        logger('@MAINTENANCE').info("Cleaning up timers..");
+        logger('@MAINTENANCE').info("Cleaning up timers and data...");
         clearInterval(this.sweeper);
-        t(true);
-      }
-      catch (/**@type {any}*/e) {
-        if(e instanceof Error)
-        f(e.message);
+        this.RateLimitBucket = {};
+        this.ipBlockList.clear();
+        resolve(true);
+      } catch (e) {
+        reject(e instanceof Error ? e.message : e);
       };
     });
   };
