@@ -10,29 +10,42 @@ export default function Header({ header }: { header: HeaderPageData }) {
   return (
     <header className="header">
       <div className="header-container">
+
         <div className="mobile-header">
-          {/* <Link href="/">
-            <Image
-              className="mobile-logo"
-              width={60}
-              height={60}
-              src="/images/leaf.png"
-              alt="Logo"
-              priority={true}
-            />
-          </Link> */}
           <button
             className="leaf-hamburger"
             onClick={() => setIsMobileMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
             <Image
-              width={50}
-              height={50}
+              width={80}
+              height={80}
               src="/images/leaf.png"
               alt="Menu"
               priority={true}
+              className={isMenuOpen ? "leaf-icon open" : "leaf-icon"}
             />
           </button>
+
+          <div className={`mobile-nav-container ${isMenuOpen ? 'open' : ''}`}>
+            <div className="mobile-nav-backdrop" onClick={() => setIsMobileMenuOpen(false)}></div>
+            <div className="mobile-nav-content">
+              <ul className="mobile-nav-list">
+                {header.navlinks.map(([name, path]) => (
+                  <li key={name} className="mobile-nav-item">
+                    <Link
+                      href={path}
+                      className="mobile-nav-link"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
 
         <Link href="/">
@@ -45,24 +58,6 @@ export default function Header({ header }: { header: HeaderPageData }) {
             priority={true}
           />
         </Link>
-
-        {isMenuOpen && (
-          <div className="mobile-nav-container">
-            <ul className="mobile-nav-list">
-              {header.navlinks.map(([name, path]) => (
-                <li key={name}>
-                  <Link
-                    href={path}
-                    className="mobile-nav-link"
-                    onClick={() => setIsMobileMenuOpen(false)}>
-                    {name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         <div className="nav-container">
           <ul className="nav-list">
             {header.navlinks.map(([name, path]) => (
@@ -74,6 +69,7 @@ export default function Header({ header }: { header: HeaderPageData }) {
             ))}
           </ul>
         </div>
+
       </div>
     </header>
   );
