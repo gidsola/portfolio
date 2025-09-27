@@ -1,6 +1,4 @@
 import { IncomingMessage, ServerResponse } from 'http';
-// const { setInterval } = require('node:timers/promises');
-import {setInterval} from 'node:timers/promises';
 import logger from './logger.mjs';
 import chalk from 'chalk';
 
@@ -17,8 +15,8 @@ class Safety {
 
   constructor() {
 
-    
-      this.urlBlockList = [{ url: "/admin" }],
+
+    this.urlBlockList = [{ url: "/admin" }],
       this.ipBlockList = new Map(),
       this.RateLimitBucket = {},
 
@@ -26,10 +24,10 @@ class Safety {
       this.INACTIVITY_LENGTH = 10000,
       this.BAN_LENGTH = 300000,
       this.SWEEP_INTERVAL = 60000;
-      /**
-       * @type {NodeJS.Timeout | undefined}
-       */
-      this.sweeper;
+    /**
+     * @type {NodeJS.Timeout | undefined}
+     */
+    this.sweeper;
 
     // maintenance();
     // const now = Date.now();
@@ -206,13 +204,18 @@ class Safety {
   };
 
 
-
-
-
-
   async cleanup() {
-    logger('@MAINTENANCE').info("Cleaning up timers..");
-    clearInterval(this.sweeper);
+    return await new Promise((t, f) => {
+      try {
+        logger('@MAINTENANCE').info("Cleaning up timers..");
+        clearInterval(this.sweeper);
+        t(true);
+      }
+      catch (/**@type {any}*/e) {
+        if(e instanceof Error)
+        f(e.message);
+      };
+    });
   };
 
 

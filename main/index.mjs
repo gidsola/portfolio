@@ -11,7 +11,7 @@ try {
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const service = new MicroService(process.env.DOMAIN);
-  service.on('ready', () => logger().info("Ready\n\n"));
+  service.on('ready', () => logger().info((chalk.greenBright("<< Ready >>\n\n"))));
 
   readline.createInterface({
     input: process.stdin,
@@ -44,7 +44,8 @@ async function gracefulShutdown(Service) {
     logger().info(chalk.yellowBright('<< NetService Offline >>'));
 
     Service.NetService.close(async () => {
-      await Service.Safety.cleanup();
+      /*const cleaned = */await Service.Safety.cleanup();
+      // console.log("cleaned?", cleaned);
       logger().info(chalk.greenBright('<< Exiting Normally >>'));
       process.exit(0);
     });
