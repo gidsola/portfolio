@@ -6,12 +6,13 @@ import { readFileSync } from 'fs';
 // import { URL } from 'url';
 import Next from 'next';
 
-import { isAllowed, WriteAndEnd, maintenance } from './safety.mjs';
+import Safety from './safety.mjs';
 import logger from './logger.mjs';
 
 class MicroService extends EventEmitter {
   NetService;
   NextServer;
+  Safety;
   /**
    * @private
    */
@@ -29,6 +30,8 @@ class MicroService extends EventEmitter {
    */
   constructor(DOMAIN) {
     super();
+
+    this.Safety = new Safety();
 
     /**@type {boolean} */
     this.development = process.env.DEV === DOMAIN;
@@ -86,7 +89,8 @@ class MicroService extends EventEmitter {
    * @private
    */
   async init() {
-    await maintenance();
+    
+    await this.Safety.maintenance();
     await this.NextServer.prepare();
     await new Promise((resolve) => {
 
@@ -126,7 +130,7 @@ class MicroService extends EventEmitter {
     } catch (e) {
       console.error(e);
       logger().error('Error handling web request:', e);
-      return WriteAndEnd(res, 500, 'Internal Server Error');
+      return this.Safety.WriteAndEnd(res, 500, 'Internal Server Error');
     };
   };
 
@@ -157,7 +161,7 @@ class MicroService extends EventEmitter {
     }
     catch (e) {
       logger().error(e);
-      return WriteAndEnd(res, 500, 'Internal Server Error');
+      return this.Safety.WriteAndEnd(res, 500, 'Internal Server Error');
     };
   };
 
@@ -174,7 +178,7 @@ class MicroService extends EventEmitter {
    */
   async ServiceResponseHandler(req, res) {
     try {
-      const allowedResponse = await isAllowed(req, res);
+      const allowedResponse = await this.Safety.isAllowed(req, res);
       return typeof allowedResponse === 'boolean'
         ? await this.processRequest(req, res)
         : allowedResponse;
@@ -182,7 +186,7 @@ class MicroService extends EventEmitter {
     } catch (e) {
       logger().error('Error:', e);
       console.log(e);
-      return WriteAndEnd(res, 500, 'Internal Server Error');
+      return this.Safety.WriteAndEnd(res, 500, 'Internal Server Error');
     };
   };
 

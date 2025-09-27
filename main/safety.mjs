@@ -1,4 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
+// const { setInterval } = require('node:timers/promises');
+import {setInterval} from 'node:timers/promises';
 import logger from './logger.mjs';
 import chalk from 'chalk';
 
@@ -11,185 +13,208 @@ import chalk from 'chalk';
  * 
  */
 
+class Safety {
 
-const
-  urlBlockList = [{ url: "/admin" }],
-  ipBlockList = new Map(),
-  RateLimitBucket = {},
+  constructor() {
 
-  RATE_LIMIT = 10,
-  INACTIVITY_LENGTH = 10000,
-  BAN_LENGTH = 300000,
-  SWEEP_INTERVAL = 60000;
+    
+      this.urlBlockList = [{ url: "/admin" }],
+      this.ipBlockList = new Map(),
+      this.RateLimitBucket = {},
 
-  // maintenance();
-// const now = Date.now();
+      this.RATE_LIMIT = 10,
+      this.INACTIVITY_LENGTH = 10000,
+      this.BAN_LENGTH = 300000,
+      this.SWEEP_INTERVAL = 60000;
+      /**
+       * @type {NodeJS.Timeout | undefined}
+       */
+      this.sweeper;
 
-function logAccess(type, method, address, url, a = null) {
+    // maintenance();
+    // const now = Date.now();
 
-  const
-    owner = "@SAFETY",
-    msgString = () => `${chalk.bgBlueBright(address)}: (Method: ${method}, URL: ${chalk.bgBlue(url)}`,
-    blockType = {
-      "url": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED URL]")}] => ${msgString()}\n`),
+  }
 
-      "ip": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED IP]")}] => ${msgString()}\n`),
+  logAccess(type, method, address, url, a = null) {
 
-      "ban": (a) => logger(owner).warn(`[${chalk.bgRedBright("BANNED")}] => ${chalk.bgBlueBright(address)} until ${a}\n`)
+    const
+      owner = "@SAFETY",
+      msgString = () => `${chalk.bgBlueBright(address)}: (Method: ${method}, URL: ${chalk.bgBlue(url)}`,
+      blockType = {
+        "url": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED URL]")}] => ${msgString()}\n`),
+
+        "ip": () => logger(owner).warn(`[${chalk.bgRedBright("[BLOCKED IP]")}] => ${msgString()}\n`),
+
+        "ban": (a) => logger(owner).warn(`[${chalk.bgRedBright("BANNED")}] => ${chalk.bgBlueBright(address)} until ${a}\n`)
+      };
+
+    blockType[type] ? blockType[type](a) : logger("SYSTEM").warn("Unknown Access Log Type..")
+
+
+    // logger('SAFETY').info(`[BLOCKED] IP ${address} banned until ${new Date(ipBanData.banExpiry)}`);
+  };
+
+  /**
+   * 
+   * @param {string} method 
+   * @param {string} address 
+   * @param {string} url 
+   * @returns 
+   */
+  async isBlocked(method, address, url) {
+    try {
+      if (address.includes("::1")) return false;
+      const now = Date.now();
+
+      if (this.urlBlockList.some((x) => url === x.url)) {
+        this.logAccess("url", method, address, url);
+        return true;
+      };
+
+      /**
+       * @type {BanData}
+       */
+      const ipBanData = this.ipBlockList.get(address);
+      if (ipBanData?.banExpiry > now) {
+        this.logAccess("ip", method, address, url);
+        return true;
+      };
+
+      return false;
+    }
+    catch (e) {
+      return true; // just incase the fail is due to the user.
     };
+  };
 
-  blockType[type] ? blockType[type](a) : logger("SYSTEM").warn("Unknown Access Log Type..")
+
+  /**
+   * 
+   * @param {string} address
+   * @param {BanData} banData
+   */
+  async setIPBlock(address, banData) {
+    try {
+      this.ipBlockList.set(address, { ...banData });
+      this.logAccess("ip", method, address, url);
+      return true;
+    }
+    catch (/**@type {any}*/e) {
+      e instanceof Error
+        ? logger().error("Error setting IP block", e.message)
+        : logger().error("Error setting IP block", e)
+      return false;
+    };
+  };
 
 
-  // logger('SAFETY').info(`[BLOCKED] IP ${address} banned until ${new Date(ipBanData.banExpiry)}`);
-};
+  /**
+   * 
+   * @param {string} method 
+   * @param {string} address 
+   * @param {string} url 
+   * @returns 
+   */
+  async isRateLimited(method, address, url) {
+    if (address.includes("::1")) return false;
+    const
+      now = Date.now(),
+      key = address + ":" + url,
+    /**@type {BanData}*/ipBanData = this.ipBlockList.get(address);
 
-/**
- * 
- * @param {string} method 
- * @param {string} address 
- * @param {string} url 
- * @returns 
- */
-export async function isBlocked(method, address, url) {
-  try {
-    if(address.includes("::1")) return false;
-    const now = Date.now();
-
-    if (urlBlockList.some((x) => url === x.url)) {
-      logAccess("url", method, address, url);
+    if (ipBanData?.banExpiry > now) {
+      this.logAccess("ban", method, address, url, new Date(ipBanData.banExpiry));
       return true;
     };
 
     /**
-     * @type {BanData}
+     * @type {LimitData}
      */
-    const ipBanData = ipBlockList.get(address);
-    if (ipBanData?.banExpiry > now) {
-      logAccess("ip", method, address, url);
-      return true;
+    const rateLimitData = this.RateLimitBucket[key] || { count: 0, lastSeen: now };
+
+    rateLimitData.count++;
+    rateLimitData.lastSeen = now;
+    this.RateLimitBucket[key] = rateLimitData;
+
+    if (rateLimitData.count > this.RATE_LIMIT) {
+      return await this.setIPBlock(address, {
+        banExpiry: now + BAN_LENGTH,
+        reason: `Exceeded ${this.RATE_LIMIT} requests to ${url}`,
+      });
     };
 
-    return false;
-  }
-  catch (e) {
-    return true; // just incase the fail is due to the user.
-  };
-};
 
 
-/**
- * 
- * @param {string} address
- * @param {BanData} banData
- */
-async function setIPBlock(address, banData) {
-  try {
-    ipBlockList.set(address, { ...banData });
-    logAccess("ip", method, address, url);
-    return true;
-  }
-  catch (/**@type {any}*/e) {
-    e instanceof Error
-      ? logger().error("Error setting IP block", e.message)
-      : logger().error("Error setting IP block", e)
     return false;
   };
-};
 
-
-/**
- * 
- * @param {string} method 
- * @param {string} address 
- * @param {string} url 
- * @returns 
- */
-export async function isRateLimited(method, address, url) {
-  if(address.includes("::1")) return false;
-  const
-    now = Date.now(),
-    key = address + ":" + url,
-    /**@type {BanData}*/ipBanData = ipBlockList.get(address);
-
-  if (ipBanData?.banExpiry > now) {
-    logAccess("ban", method, address, url, new Date(ipBanData.banExpiry));
-    return true;
-  };
 
   /**
-   * @type {LimitData}
+   * @param {Response} res
+   * @param {number} statusCode
+   * @param {string} message
+   *
    */
-  const rateLimitData = RateLimitBucket[key] || { count: 0, lastSeen: now };
-
-  rateLimitData.count++;
-  rateLimitData.lastSeen = now;
-  RateLimitBucket[key] = rateLimitData;
-
-  if (rateLimitData.count > RATE_LIMIT) {
-    return await setIPBlock(address, {
-      banExpiry: now + BAN_LENGTH,
-      reason: `Exceeded ${RATE_LIMIT} requests to ${url}`,
-    });
+  async WriteAndEnd(res, statusCode, message) {
+    return res
+      .writeHead(statusCode, {
+        'Content-Length': Buffer.byteLength(message),
+        'Content-Type': 'text/plain'
+      })
+      .end(message);
   };
 
 
+  /**
+   * @param {IncomingMessage} req
+   * @param {Response} res
+   *
+   */
+  async isAllowed(req, res) {
+    try {
+      if (!req.method || !req.url || req.method === "POST") return res.end(); // dont forget posts are blocked..
 
-  return false;
-};
+      if ((await this.isRateLimited(req.method, req.headers['x-forwarded-for'] /*as string*/ || req.socket.remoteAddress, req.url))) {
+        return this.WriteAndEnd(res, 429, 'Too many requests');
+      };
 
+      if ((await this.isBlocked(req.method, req.socket.remoteAddress, req.url))) {
+        return this.WriteAndEnd(res, 403, `Access Denied`);
+      };
 
-/**
- * @param {Response} res
- * @param {number} statusCode
- * @param {string} message
- *
- */
-export async function WriteAndEnd(res, statusCode, message) {
-  return res
-    .writeHead(statusCode, {
-      'Content-Length': Buffer.byteLength(message),
-      'Content-Type': 'text/plain'
-    })
-    .end(message);
-};
+      return true;
 
-
-/**
- * @param {IncomingMessage} req
- * @param {Response} res
- *
- */
-export async function isAllowed(req, res) {
-  try {
-    if (!req.method || !req.url || req.method === "POST") return res.end(); // dont forget posts are blocked..
-
-    if ((await isRateLimited(req.method, req.headers['x-forwarded-for'] /*as string*/ || req.socket.remoteAddress, req.url))) {
-      return WriteAndEnd(res, 429, 'Too many requests');
+    } catch (e) {
+      logger().error(e);
+      return this.WriteAndEnd(res, 500, 'Internal Server Error');
     };
-
-    if ((await isBlocked(req.method, req.socket.remoteAddress, req.url))) {
-      return WriteAndEnd(res, 403, `Access Denied`);
-    };
-
-    return true;
-
-  } catch (e) {
-    logger().error(e);
-    return WriteAndEnd(res, 500, 'Internal Server Error');
   };
-};
 
 
-export async function maintenance() {
-  logger('@MAINTENANCE').info("Initializing RateLimit Bucket Maintenance..")
-  setInterval(() => {
-    logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");
-    const now = Date.now();
-    for (const [key, data] of Object.entries(RateLimitBucket)) {
-      if (now - data.lastSeen > INACTIVITY_LENGTH) {
-        delete RateLimitBucket[key];
+  async maintenance() {
+    logger('@MAINTENANCE').info("Initializing RateLimit Bucket Maintenance..")
+    this.sweeper = setInterval(() => {
+      logger('@MAINTENANCE').info("Performing RateLimit Bucket Maintenance..");
+      const now = Date.now();
+      for (const [key, data] of Object.entries(this.RateLimitBucket)) {
+        if (now - data.lastSeen > this.INACTIVITY_LENGTH) {
+          delete this.RateLimitBucket[key];
+        }
       }
-    }
-  }, SWEEP_INTERVAL);
+    }, this.SWEEP_INTERVAL);
+  };
+
+
+
+
+
+
+  async cleanup() {
+    logger('@MAINTENANCE').info("Cleaning up timers..");
+    clearInterval(this.sweeper);
+  };
+
+
 };
+export default Safety;
