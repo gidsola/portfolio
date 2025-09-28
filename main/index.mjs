@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { readFile } from 'fs/promises';
 import { OnSocketBanner } from './banners.mjs';
-import MicroService from './MicroService.mjs';
+import MicroService from 'netservice';
 import logger from './logger.mjs';
 import readline from 'readline';
 import chalk from 'chalk';
@@ -11,7 +11,7 @@ try {
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const service = new MicroService(process.env.DOMAIN);
-  service.on('ready', () => logger().info((chalk.greenBright("<< Ready >>\n\n"))));
+  service.on('ready', async ()=> logger().info(chalk.greenBright('<< Ready >>')) );
 
   readline.createInterface({
     input: process.stdin,

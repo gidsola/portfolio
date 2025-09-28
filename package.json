@@ -10,6 +10,7 @@
     "dotenv": "^17.2.2",
     "mongodb": "^6.19.0",
     "mysql2": "^3.14.5",
+    "netservice": "^2.0.6",
     "next": "^15.5.3",
     "node-loader": "^2.1.0",
     "react": "^19.1.1",
@@ -22,5 +23,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^24.5.0",
     "@types/react": "^19.1.13"
-  }
+  },
+  "name": "portfolio",
+  "version": "1.0"
 }
