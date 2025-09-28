@@ -137,7 +137,7 @@ class Safety {
 
     if (rateLimitData.count > this.RATE_LIMIT) {
       return await this.setIPBlock(address, {
-        banExpiry: now + BAN_LENGTH,
+        banExpiry: now + this.BAN_LENGTH,
         reason: `Exceeded ${this.RATE_LIMIT} requests to ${url}`,
       });
     };
