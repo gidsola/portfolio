@@ -8,6 +8,7 @@
     "bcrypt": "^6.0.0",
     "chalk": "^5.6.2",
     "dotenv": "^17.2.2",
+    "mongoconnect-ts": "^1.0.1",
     "mongodb": "^6.19.0",
     "mysql2": "^3.14.5",
     "netservice": "^2.1.4",
