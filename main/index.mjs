@@ -10,8 +10,8 @@ try {
   // startup check, bail if no version info
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
-  const service = new NetService(process.env.DOMAIN);
-  service.on('ready', async ()=> logger().info(chalk.greenBright('<< Ready >>')) );
+  const netservice = new NetService(process.env.DOMAIN);
+  netservice.on('ready', async () => logger().info(chalk.greenBright('<< Ready >>')));
 
   readline.createInterface({
     input: process.stdin,
@@ -19,12 +19,12 @@ try {
   })
     .on('line', async (input) => {
       if (input.trim().toLowerCase() === 'shutdown') {
-        await gracefulShutdown(service);
+        await gracefulShutdown(netservice);
       }
     });
 
-  process.on('SIGINT', async () => { await gracefulShutdown(service) });
-  process.on('SIGTERM', async () => { await gracefulShutdown(service) });
+  process.on('SIGINT', async () => { await gracefulShutdown(netservice) });
+  process.on('SIGTERM', async () => { await gracefulShutdown(netservice) });
 
 } catch (e) {
   console.error(e);
@@ -33,19 +33,18 @@ try {
 
 
 /**
- * @param {NetService} Service
+ * @param {NetService} NetService
  * 
  * @private
  */
-async function gracefulShutdown(Service) {
+async function gracefulShutdown(NetService) {
   try {
-    Service.NetService.closeAllConnections();
-    await Service.NextServer.close();
+    NetService.Service.closeAllConnections();
+    await NetService.NextServer.close();
     logger().info(chalk.yellowBright('<< NetService Offline >>'));
 
-    Service.NetService.close(async () => {
-      /*const cleaned = */await Service.Safety.cleanup();
-      // console.log("cleaned?", cleaned);
+    NetService.Service.close(async () => {
+      await NetService.Safety.cleanup();
       logger().info(chalk.greenBright('<< Exiting Normally >>'));
       process.exit(0);
     });
@@ -53,7 +52,7 @@ async function gracefulShutdown(Service) {
   }
   catch (e) {
     logger().error('Error closing NetService:', e);
-    Service.NetService.close(() => {
+    NetService.Service.close(() => {
       logger().info(chalk.redBright('Exiting with code: 1 ->>'));
       process.exit(1);
     });
