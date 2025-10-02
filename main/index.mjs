@@ -41,10 +41,9 @@ async function gracefulShutdown(NetService) {
   try {
     NetService.Service.closeAllConnections();
     await NetService.NextServer.close();
-    logger().info(chalk.yellowBright('<< NetService Offline >>'));
+    logger().info(chalk.yellowBright('<< NextServer Offline >>'));
 
-    NetService.Service.close(async () => {
-      await NetService.Safety.cleanup();
+    NetService.Service.close(() => {
       logger().info(chalk.greenBright('<< Exiting Normally >>'));
       process.exit(0);
     });
