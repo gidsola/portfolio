@@ -11,7 +11,7 @@
     "mongoconnect-ts": "^1.0.1",
     "mongodb": "^6.19.0",
     "mysql2": "^3.14.5",
-    "netservice": "^2.1.5",
+    "netservice": "^2.2.0",
     "next": "^15.5.3",
     "node-loader": "^2.1.0",
     "react": "^19.1.1",
