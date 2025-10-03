@@ -13,7 +13,21 @@ try {
 
   const netservice = new NetService(process.env.DOMAIN);
   netservice
-    .on('ready', async () => logger().info(chalk.greenBright('<< Ready >>')));
+    .on('ready', async () => logger().info(chalk.greenBright('<< Ready >>')))
+
+    .on('ws:ready', async () => logger().info(chalk.greenBright('<< Ws_Server Ready >>')))
+    .on('ws:connection', async () => logger().info(chalk.greenBright('<< Got Connected!! >>')))
+    .on('ws:message', async ({client, data}) => {
+      const
+        _data = JSON.parse(data),
+        payload = _data.p;
+
+        client.send(payload.msg);
+        
+      
+    })
+    .on('ws:disconnect', async () => logger().info(chalk.greenBright('<< Got DisConnected!! >>')))
+    .on('ws:error', async () => logger().info(chalk.greenBright(e)))
 
   netservice.MiddlewareMgr
     .register('*', netservice.Safety.mwRateLimit())
