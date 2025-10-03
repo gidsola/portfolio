@@ -10,7 +10,7 @@
     "dotenv": "^17.2.2",
     "mongoconnect-ts": "^1.0.1",
     "mongodb": "^6.19.0",
-    "netservice": "^2.2.2",
+    "netservice": "^3.0.0",
     "next": "^15.5.3",
     "node-loader": "^2.1.0",
     "react": "^19.1.1",
