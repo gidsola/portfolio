@@ -9,10 +9,10 @@ import { gracefulShutdown } from './helpers.mjs';
 import ws from 'ws';
 
 
-/** @type {Payload} @typedef {{msg:string}} Payload */
-/** @type {Client} @typedef {ws} Client */
+/** @type {Payload} @typedef {{msg: string, type: string}} Payload */
+/** @type {Client}  @typedef {ws} Client */
 /** @type {RawData} @typedef {ArrayBuffer | Buffer<ArrayBufferLike>} RawData */
-/** @type {Data} @typedef {{client:Client, data:RawData}} Data */
+/** @type {Data}    @typedef {{client: Client, data: RawData}} Data */
 
 
 try {
@@ -28,19 +28,23 @@ try {
 
       netservice
         .Sockitz
-        .on('zREADY', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client Hello >>')))
+
+        .on('zREADY', async ({ client, req }) => {
+          logger('SOCKITZ').info(chalk.greenBright('<< Client Hello >>'));
+        })
+
         .on('zMESSAGE', async (/**@type {Data}*/{ client, data }) => {
           const
           /**@type {Payload}*/payload = JSON.parse(data);
 
           client.send(payload.msg);
 
-        
-        
-        
+
+
+
         })
         .on('zCLOSE', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client DisConnected >>')))
-        .on('zERROR', async () => logger('SOCKITZ').info(chalk.redBright(e)))
+        .on('zERROR', async (e) => logger('SOCKITZ').info(chalk.redBright(e)));
 
       netservice
         .MiddlewareMgr
@@ -61,9 +65,23 @@ try {
         .on('SIGINT', async () => await gracefulShutdown(netservice))
         .on('SIGTERM', async () => await gracefulShutdown(netservice));
 
-      netservice
-        .on('ready', async () => logger().info(chalk.greenBright('<< All Systems Ready >>')))
+
+    })
+    .on('error', async function serviceError(e) {
+      logger('@NetService').error(e instanceof Error ? e.message : e);
+    })
+    .on('clientError', async function clientError(e, socket) {
+      socket.destroy(e);
+    })
+    .on('tlsClientError', async function tlsClientError(e, socket) {
+      socket.destroy(e);
+    })
+    .on('close', async () => {
+      await netservice.Safety.cleanup();
     });
+
+  netservice
+    .on('ready', async () => logger().info(chalk.greenBright('<< All Systems Ready >>')))
 }
 catch (e) {
   console.error(e);

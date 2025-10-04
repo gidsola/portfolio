@@ -28,7 +28,8 @@ export async function gracefulShutdown(NetService) {
   };
 
   // force close connected clients
-  setTimeout(() => {
+  setTimeout(async () => {
+    await NetService.Safety.cleanup();
     logger().info(chalk.yellowBright('Force closing connections..'));
     process.exit(0);
   }, 5000);
