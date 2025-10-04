@@ -6,47 +6,64 @@ import logger from './logger.mjs';
 import readline from 'readline';
 import chalk from 'chalk';
 import { gracefulShutdown } from './helpers.mjs';
+import ws from 'ws';
+
+
+/** @type {Payload} @typedef {{msg:string}} Payload */
+/** @type {Client} @typedef {ws} Client */
+/** @type {RawData} @typedef {ArrayBuffer | Buffer<ArrayBufferLike>} RawData */
+/** @type {Data} @typedef {{client:Client, data:RawData}} Data */
+
 
 try {
   // startup check, bail if no version info
   OnSocketBanner(await readFile('.version', { encoding: 'utf8' }));
 
   const netservice = new NetService(process.env.DOMAIN);
+
   netservice
-    .on('ready', async () => logger().info(chalk.greenBright('<< Ready >>')))
+    .Server
+    .on('listening', async () => {
+      logger('SERVER').info(chalk.greenBright('<< Server Listening >>'));
 
-    .on('ws:ready', async () => logger().info(chalk.greenBright('<< Ws_Server Ready >>')))
-    .on('ws:connection', async () => logger().info(chalk.greenBright('<< Got Connected!! >>')))
-    .on('ws:message', async ({client, data}) => {
-      const
-        _data = JSON.parse(data),
-        payload = _data.p;
+      netservice
+        .Sockitz
+        .on('zREADY', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client Hello >>')))
+        .on('zMESSAGE', async (/**@type {Data}*/{ client, data }) => {
+          const
+          /**@type {Payload}*/payload = JSON.parse(data);
 
-        client.send(payload.msg);
+          client.send(payload.msg);
+
         
-      
-    })
-    .on('ws:disconnect', async () => logger().info(chalk.greenBright('<< Got DisConnected!! >>')))
-    .on('ws:error', async () => logger().info(chalk.greenBright(e)))
+        
+        
+        })
+        .on('zCLOSE', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client DisConnected >>')))
+        .on('zERROR', async () => logger('SOCKITZ').info(chalk.redBright(e)))
 
-  netservice.MiddlewareMgr
-    .register('*', netservice.Safety.mwRateLimit())
-    .register('*', netservice.Safety.mwBlockList());
+      netservice
+        .MiddlewareMgr
+        .register('*', netservice.Safety.mwRateLimit())
+        .register('*', netservice.Safety.mwBlockList());
 
-  process
-    .on('SIGINT', async () => await gracefulShutdown(netservice))
-    .on('SIGTERM', async () => await gracefulShutdown(netservice));
+      readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
+        .on('line', async (input) => {
+          if (input.trim().toLowerCase() === 'shutdown') {
+            await gracefulShutdown(netservice);
+          }
+        });
 
-  readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-    .on('line', async (input) => {
-      if (input.trim().toLowerCase() === 'shutdown') {
-        await gracefulShutdown(netservice);
-      }
+      process
+        .on('SIGINT', async () => await gracefulShutdown(netservice))
+        .on('SIGTERM', async () => await gracefulShutdown(netservice));
+
+      netservice
+        .on('ready', async () => logger().info(chalk.greenBright('<< All Systems Ready >>')))
     });
-
 }
 catch (e) {
   console.error(e);
