@@ -82,7 +82,6 @@ export default function Contact() {
 
     handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       try {
-        console.log(window.location)
         e.preventDefault();
         setStatusMsg({
           showStatus: true,
