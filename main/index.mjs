@@ -47,16 +47,14 @@ try {
               // message = payload.msg,
               /**@type {{TypeString: (payload: Payload)=>{}} } */TypeStrings = {
 
-                "contact": (payload) => {
-                  
-                  console.log("cf_payload", payload)
+                "contact": (/**@type {CF_Payload}*/payload) => {
                   client.send(JSON.stringify({ success: true, message: payload.message }));
                   client.close(1000);
 
                 },
 
-                "test": (payload) => {
-                  client.send(JSON.stringify({ success: true, message }));
+                "test": (/**@type {Test_Payload}*/payload) => {
+                  client.send(JSON.stringify({ success: true, message: payload.msg }));
                   client.close(1000);
                 }
 
@@ -64,17 +62,10 @@ try {
 
             TypeStrings[type] ? TypeStrings[type](payload) : logger('SOCKITZ').info(chalk.redBright('<< UnHandled TypeString >>'));
 
-
-            console.log("PAYLOAD", payload);
-
-
-
-
-
           }
           catch (e) {
             logger('SOCKITZ').error(e instanceof Error ? e.message : e);
-          }
+          };
 
         })
         .on('zCLOSE', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client DisConnected >>')))
