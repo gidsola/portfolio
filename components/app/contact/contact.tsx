@@ -82,6 +82,7 @@ export default function Contact() {
 
     handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       try {
+        console.log(window.location)
         e.preventDefault();
         setStatusMsg({
           showStatus: true,
@@ -94,7 +95,7 @@ export default function Contact() {
 
         const
           target = e.currentTarget,
-          response = await sendSocketMessage(new FormData(target), 'ws://localhost/ws'),
+          response = await sendSocketMessage(new FormData(target), window.origin + '/ws'),
           msgbody = {
             showStatus: true,
             hasError: response.success ? false : true,
