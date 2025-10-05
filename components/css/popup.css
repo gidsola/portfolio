@@ -1,0 +1,31 @@
+
+.status-modal-overlay {
+  position: fixed;
+  inset: 0; 
+  background: var(--primary-overlay); 
+  z-index: 50;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-modal {
+  background: var(--dark-card-background); 
+  border-radius: 0.5rem; 
+  padding: 1.5rem;
+  width: 24rem; 
+  max-width: 90%; 
+  box-shadow: var(--shadow);
+}
+
+.status-modal-title {
+  font-size: 1.125rem; 
+  font-weight: 500; 
+  margin-bottom: 0.5rem;
+}
+
+.status-modal-message {
+  padding: 0.5rem;
+  margin: 1rem; 
+}

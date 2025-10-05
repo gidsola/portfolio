@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import Popup from '@/components/popup/popup'
 import '@/css/contact.css';
 import { FaEnvelope, FaLinkedin, FaGithub, FaPaperPlane } from 'react-icons/fa';
 import { Metadata } from 'next';
@@ -8,13 +9,40 @@ export const metadata: Metadata = {
   title: "Contact"
 };
 
-type zResponse = { success: boolean | null, message: string };
+type StatusMsg = {
+  showStatus: boolean;
+  hasError: boolean;
+  showLoading: boolean;
+  showButton: boolean;
+  title: string;
+  message: string;
+};
+type WS_Response = {success: boolean, message: string};
 
 export default function Contact() {
 
   const
-    [submitStatus, setStatusMsg] = useState<zResponse>({ success: null, message: '' }),
-    sendSocketMessage = async (formData: FormData, wsUrl: string): Promise<any> => {
+    clearStatus = () => {
+      setStatusMsg({
+        showStatus: false,
+        hasError: false,
+        showLoading: false,
+        showButton: true,
+        title: "",
+        message: ""
+      });
+    },
+
+    [submitStatus, setStatusMsg] = useState<StatusMsg>({
+      showStatus: false,
+      hasError: false,
+      showLoading: false,
+      showButton: true,
+      title: "",
+      message: ""
+    }),
+
+    sendSocketMessage = async (formData: FormData, wsUrl: string): Promise<WS_Response> => {
       return new Promise((resolve, reject) => {
         try {
           const
@@ -50,27 +78,49 @@ export default function Contact() {
           reject({ success: false, message: e.message });
         };
       });
+    },
+
+    handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      try {
+        e.preventDefault();
+        setStatusMsg({
+          showStatus: true,
+          hasError: false,
+          showLoading: true,
+          showButton: false,
+          title: "Sending...",
+          message: "Your message is being sent.",
+        });
+
+        const
+          target = e.currentTarget,
+          response = await sendSocketMessage(new FormData(target), 'ws://localhost/ws'),
+          msgbody = {
+            showStatus: true,
+            hasError: response.success ? false : true,
+            showLoading: false,
+            showButton: true,
+            title: response.success ? "Success!" : "Error!",
+            message: response.success ? "Your message has been sent successfully." : "Failed to send your message. Please try again.",
+          };
+
+        await new Promise(r => setTimeout(r, 3000)); // just for kicks :)
+        setStatusMsg(msgbody);
+
+        target.reset();
+      }
+      catch (e: any) {
+        console.log("failed", e);
+        setStatusMsg({
+          showStatus: true,
+          hasError: true,
+          showLoading: false,
+          showButton: true,
+          title: "Error!",
+          message: "Failed to send your message. Please try again.",
+        });
+      };
     };
-
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      setStatusMsg({ success: null, message: '' });
-
-      const
-        target = e.currentTarget,
-        // formData = new FormData(target),
-        response = await sendSocketMessage(new FormData(target), 'ws://localhost/ws');
-      console.log("RESPONSE2: ", response);
-      setStatusMsg({ success: response.success, message: response.message });
-
-      target.reset();
-    } catch (e: any) {
-      console.log("failed", e);
-      setStatusMsg({ success: false, message: e.message });
-    }
-  };
 
   return (
     <div className="page">
@@ -172,12 +222,12 @@ export default function Contact() {
                 Send Message
               </button>
             </form>
-            {
-              submitStatus.message &&
-              <div className={submitStatus.success ? 'success' : 'error'}>
-                {submitStatus.message}
-              </div>
-            }
+
+
+            <Popup submitStatus={submitStatus} clearStatus={clearStatus} />
+
+
+
           </div>
         </div>
       </div>
