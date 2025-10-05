@@ -9,10 +9,16 @@ import { gracefulShutdown } from './helpers.mjs';
 import ws from 'ws';
 
 
-/** @type {Payload} @typedef {{msg: string, type: string}} Payload */
-/** @type {Client}  @typedef {ws} Client */
-/** @type {RawData} @typedef {ArrayBuffer | Buffer<ArrayBufferLike>} RawData */
-/** @type {Data}    @typedef {{client: Client, data: RawData}} Data */
+/** @type {TypeString}   @typedef {"contact" | "auth" | "test"} TypeString */
+
+/** @type {CF_Payload}   @typedef {{type: "contact", name: string, email: string, message: string}} CF_Payload */
+/** @type {Auth_Payload} @typedef {{type: "auth", token: string, client_id: string}} Auth_Payload */
+/** @type {Test_Payload} @typedef {{type: "test", msg: string}} Test_Payload */
+/** @type {Payload}      @typedef {CF_Payload | Auth_Payload | Test_Payload} Payload */
+
+/** @type {Client}       @typedef {ws} Client */
+/** @type {RawData}      @typedef {ArrayBuffer | Buffer<ArrayBufferLike>} RawData */
+/** @type {Data}         @typedef {{client: Client, data: RawData}} Data */
 
 
 try {
@@ -34,13 +40,41 @@ try {
         })
 
         .on('zMESSAGE', async (/**@type {Data}*/{ client, data }) => {
-          const
-          /**@type {Payload}*/payload = JSON.parse(data);
+          try {
+            const
+              /**@type {Payload}*/payload = JSON.parse(data),
+              type = payload.type,
+              // message = payload.msg,
+              /**@type {{TypeString: (payload: Payload)=>{}} } */TypeStrings = {
 
-          client.send(payload.msg);
+                "contact": (payload) => {
+                  
+                  console.log("cf_payload", payload)
+                  client.send(JSON.stringify({ success: true, message: payload.message }));
+                  client.close(1000);
+
+                },
+
+                "test": (payload) => {
+                  client.send(JSON.stringify({ success: true, message }));
+                  client.close(1000);
+                }
+
+              };
+
+            TypeStrings[type] ? TypeStrings[type](payload) : logger('SOCKITZ').info(chalk.redBright('<< UnHandled TypeString >>'));
+
+
+            console.log("PAYLOAD", payload);
 
 
 
+
+
+          }
+          catch (e) {
+            logger('SOCKITZ').error(e instanceof Error ? e.message : e);
+          }
 
         })
         .on('zCLOSE', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client DisConnected >>')))

@@ -1,4 +1,5 @@
 "use client";
+import { useState } from 'react';
 import '@/css/contact.css';
 import { FaEnvelope, FaLinkedin, FaGithub, FaPaperPlane } from 'react-icons/fa';
 import { Metadata } from 'next';
@@ -7,24 +8,70 @@ export const metadata: Metadata = {
   title: "Contact"
 };
 
+type zResponse = { success: boolean | null, message: string };
+
 export default function Contact() {
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    try{e.preventDefault();
-    
-    const formData = new FormData(e.currentTarget);
-    console.log('Form submitted:', formData.entries());
+  const
+    [submitStatus, setStatusMsg] = useState<zResponse>({ success: null, message: '' }),
+    sendSocketMessage = async (formData: FormData, wsUrl: string): Promise<any> => {
+      return new Promise((resolve, reject) => {
+        try {
+          const
+            ws = new WebSocket(wsUrl),
+            data = Object.fromEntries(formData.entries());
+
+          ws.onopen = () => {
+            ws.send(JSON.stringify({ type: "contact", ...data }));
+          };
+
+          ws.onmessage = (event) => {
+
+            const response = JSON.parse(event.data);
+            // console.log("RESPONSE: ", response);
+            ws.close();
+            resolve({ ...response });
+          };
+
+          ws.onerror = (e: any) => {
+            ws.close();
+            resolve({ success: false, message: e.message });
+          };
+
+          setTimeout(() => {
+            if (ws.readyState !== WebSocket.OPEN) {
+              ws.close();
+              reject({ success: false, message: 'Failed to connect to server.' });
+            };
+          }, 3000);
+
+        }
+        catch (e: any) {
+          reject({ success: false, message: e.message });
+        };
+      });
+    };
 
 
-    // sendEmail(data);
-    // sendSocketMessage(data);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      setStatusMsg({ success: null, message: '' });
 
-    e.currentTarget.reset();
-  }catch(e){
-    console.log("failed", e);
-  }
+      const
+        target = e.currentTarget,
+        // formData = new FormData(target),
+        response = await sendSocketMessage(new FormData(target), 'ws://localhost/ws');
+      console.log("RESPONSE2: ", response);
+      setStatusMsg({ success: response.success, message: response.message });
+
+      target.reset();
+    } catch (e: any) {
+      console.log("failed", e);
+      setStatusMsg({ success: false, message: e.message });
+    }
   };
- 
+
   return (
     <div className="page">
       <div className="page-container">
@@ -90,6 +137,7 @@ export default function Contact() {
                 <input
                   type="text"
                   id="name"
+                  name="name"
                   className="form-input"
                   placeholder="Your name"
                   required
@@ -101,6 +149,7 @@ export default function Contact() {
                 <input
                   type="email"
                   id="email"
+                  name="email"
                   className="form-input"
                   placeholder="Your email"
                   required
@@ -111,6 +160,7 @@ export default function Contact() {
                 <label htmlFor="message" className="form-label">Message</label>
                 <textarea
                   id="message"
+                  name="message"
                   className="form-textarea"
                   rows={6}
                   placeholder="How can I help you?"
@@ -122,6 +172,12 @@ export default function Contact() {
                 Send Message
               </button>
             </form>
+            {
+              submitStatus.message &&
+              <div className={submitStatus.success ? 'success' : 'error'}>
+                {submitStatus.message}
+              </div>
+            }
           </div>
         </div>
       </div>
