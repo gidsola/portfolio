@@ -34,7 +34,6 @@ try {
 
       netservice
         .Sockitz
-
         .on('zREADY', async ({ client, req }) => {
           logger('SOCKITZ').info(chalk.greenBright('<< Client Hello >>'));
         })
@@ -44,26 +43,25 @@ try {
             const
               /**@type {Payload}*/payload = JSON.parse(data),
               type = payload.type,
-              // message = payload.msg,
-              /**@type {{TypeString: (payload: Payload)=>{}} } */TypeStrings = {
+              /**@type {{TypeString: (payload: Payload)=> Promise<void>} } */TypeStrings = {
 
-                "contact": (/**@type {CF_Payload}*/payload) => {
+                "contact": async (/**@type {CF_Payload}*/payload) => {
                   client.send(JSON.stringify({ success: true, message: payload.message }));
                   client.close(1000);
 
                 },
 
-                "test": (/**@type {Test_Payload}*/payload) => {
+                "test": async (/**@type {Test_Payload}*/payload) => {
                   client.send(JSON.stringify({ success: true, message: payload.msg }));
                   client.close(1000);
                 }
 
               };
 
-            TypeStrings[type] ? TypeStrings[type](payload) : logger('SOCKITZ').info(chalk.redBright('<< UnHandled TypeString >>'));
+            TypeStrings[type] ? await TypeStrings[type](payload) : logger('SOCKITZ').info(chalk.redBright('<< UnHandled TypeString >>'));
 
           }
-          catch (e) {
+          catch (/** @type {any} */e) {
             logger('SOCKITZ').error(e instanceof Error ? e.message : e);
           };
 
@@ -76,39 +74,36 @@ try {
         .register('*', netservice.Safety.mwRateLimit())
         .register('*', netservice.Safety.mwBlockList());
 
-      readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-      })
-        .on('line', async (input) => {
-          if (input.trim().toLowerCase() === 'shutdown') {
-            await gracefulShutdown(netservice);
-          }
-        });
+      readline
+        .createInterface({ input: process.stdin, output: process.stdout })
+        .on('line', async (input) => input.trim().toLowerCase() === 'shutdown' && await gracefulShutdown(netservice));
 
       process
         .on('SIGINT', async () => await gracefulShutdown(netservice))
         .on('SIGTERM', async () => await gracefulShutdown(netservice));
-
-
     })
+
     .on('error', async function serviceError(e) {
       logger('@NetService').error(e instanceof Error ? e.message : e);
     })
+
     .on('clientError', async function clientError(e, socket) {
       socket.destroy(e);
     })
+
     .on('tlsClientError', async function tlsClientError(e, socket) {
       socket.destroy(e);
     })
+
     .on('close', async () => {
       await netservice.Safety.cleanup();
     });
 
   netservice
-    .on('ready', async () => logger().info(chalk.greenBright('<< All Systems Ready >>')))
+    .on('ready', async () => logger().info(chalk.greenBright('<< All Systems Ready >>')));
+
 }
-catch (e) {
+catch (/** @type {any} */e) {
   console.error(e);
-  logger().error('Construction Error:', e);
+  logger().error(e instanceof Error ? e.message : e);
 };
