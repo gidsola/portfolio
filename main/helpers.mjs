@@ -1,4 +1,5 @@
 import NetService from 'netservice';
+import nodemailer from 'nodemailer';
 import logger from './logger.mjs';
 import chalk from 'chalk';
 
@@ -33,4 +34,42 @@ export async function gracefulShutdown(NetService) {
     logger().info(chalk.yellowBright('Force closing connections..'));
     process.exit(0);
   }, 5000);
+};
+
+
+/**
+ * 
+ * @param {string} email
+ * @param {string} subject
+ * @param {string} text
+ * @param {string} html
+ * @returns {Promise<string | boolean>}
+ */
+export async function sendEmail(email, subject, text, html) {
+  try {
+    const
+      SMTPTransportOptions = {
+        "host": process.env.SMTP_HOST,
+        "port": process.env.SMTP_PORT,
+        "secure": true,
+        "auth": {
+          "user": process.env.SMTP_USER,
+          "pass": process.env.SMTP_PASS
+        }
+      },
+      transporter = nodemailer.createTransport({ ...SMTPTransportOptions }),
+      info = await transporter.sendMail({
+        from: '"Goodsie.ca" <mike@goodsie.ca>',
+        to: email,
+        subject: subject,
+        text: text,
+        html: html
+      });
+
+    return info.messageId ? info.messageId : false;
+  } 
+  catch (e) {
+    console.error(e);
+    return false;
+  };
 };

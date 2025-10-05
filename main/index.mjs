@@ -5,7 +5,7 @@ import NetService from 'netservice';
 import logger from './logger.mjs';
 import readline from 'readline';
 import chalk from 'chalk';
-import { gracefulShutdown } from './helpers.mjs';
+import { sendEmail, gracefulShutdown } from './helpers.mjs';
 import ws from 'ws';
 
 
@@ -46,8 +46,21 @@ try {
               /**@type {{TypeString: (payload: Payload)=> Promise<void>} } */TypeStrings = {
 
                 "contact": async (/**@type {CF_Payload}*/payload) => {
-                  client.send(JSON.stringify({ success: true, message: payload.message }));
-                  client.close(1000);
+                  try {
+
+                    // <b79ff716-3ee9-8901-5885-bb34894e8d95@goodsie.ca>
+                    const receipt_id = await sendEmail(payload.email, `CF_MSG :: ${payload.name}`, payload.message, payload.message);
+
+                    // console.log("Mail_Res: ", receipt_id);
+
+
+                    client.send(JSON.stringify({ success: true, message: receipt_id }));
+                    client.close(1000);
+                  }
+                  catch (e) {
+                    client.send(JSON.stringify({ success: false, message: "Mail Delivery Failure.." }));
+                    client.close(1000);
+                  }
 
                 },
 
