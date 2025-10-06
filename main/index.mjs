@@ -48,12 +48,12 @@ try {
                 "contact": async (/**@type {CF_Payload}*/payload) => {
                   try {
 
-                    console.log("Received Paload: ", payload);
+                    // console.log("Received Paload: ", payload);
 
                     // <b79ff716-3ee9-8901-5885-bb34894e8d95@goodsie.ca>
                     const sentMessageInfo = await sendEmail(payload.email, `CF_MSG :: ${payload.name}`, `"${payload.name}" @ ${payload.email} sent: ${payload.message}`, `<div>"${payload.name}"  @ ${payload.email} sent: ${payload.message}</div>`);
 
-                    console.log("SentMessageInfo: ", sentMessageInfo);
+                    // console.log("SentMessageInfo: ", sentMessageInfo);
 
 
                     client.send(JSON.stringify({ success: true, message: sentMessageInfo.messageId }));
