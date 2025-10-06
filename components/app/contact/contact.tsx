@@ -101,7 +101,7 @@ export default function Contact() {
             showLoading: false,
             showButton: true,
             title: response.success ? "Success!" : "Error!",
-            message: response.success ? "Your message has been sent successfully." : "Failed to send your message. Please try again.",
+            message: response.success ? response.message : "Failed to send your message. Please try again.",
           };
 
         await new Promise(r => setTimeout(r, 3000)); // just for kicks :)

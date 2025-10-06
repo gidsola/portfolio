@@ -43,7 +43,7 @@ export async function gracefulShutdown(NetService) {
  * @param {string} subject
  * @param {string} text
  * @param {string} html
- * @returns {Promise<string | boolean>}
+ * @returns {Promise<SMTPPool.SentMessageInfo>}
  */
 export async function sendEmail(email, subject, text, html) {
   try {
@@ -60,13 +60,13 @@ export async function sendEmail(email, subject, text, html) {
       transporter = nodemailer.createTransport({ ...SMTPTransportOptions }),
       info = await transporter.sendMail({
         from: '"Goodsie.ca" <mike@goodsie.ca>',
-        to: email,
+        to: process.env.SMTP_USER,
         subject: subject,
         text: text,
         html: html
       });
 
-    return info.messageId ? info.messageId : false;
+    return info;
   } 
   catch (e) {
     console.error(e);
