@@ -16,7 +16,7 @@
   padding: 1.5rem;
   width: 24rem; 
   max-width: 90%; 
-  box-shadow: var(--shadow);
+  box-shadow: var(--box-shadow);
 }
 
 .status-modal-title {

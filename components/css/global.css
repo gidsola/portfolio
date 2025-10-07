@@ -5,8 +5,11 @@
   --primary-text: #f5f5f5;
   --secondary-text: #444147;
 
+
+  --secondary-blue: rgb(82, 98, 168);
   --primary-blue: #6e8efb;
   --primary-orange: #d88f31;
+  --secondary-orange: #e29024c5;
 
   /*happy here*/
   --bodybg-dark: rgba(48, 48, 48, 0.75);
@@ -15,8 +18,9 @@
 
   --border-color: rgba(77, 77, 77, 0.1);
 
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --box-shadow-4: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
 
   --success: #36e470;
   --error: #ef4444;
@@ -127,18 +131,19 @@ h2:after {
   position: sticky;
   top: 0;
   width: 100%;
-  background: linear-gradient(135deg, var(--secondary-text), var(--primary-blue));
-  box-shadow: var(--shadow);
+  background: linear-gradient(135deg, rgb(48, 48, 48), rgb(82, 98, 168), rgb(48, 48, 48));
+  box-shadow: var(--box-shadow);
   z-index: 999;
 }
 
-.desktop-logo {
+/* .desktop-logo {
   background-image: url("/images/leaf.png");
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
+  background-origin: border-box;
+  background-position:right;
+  background-size:contain;
   display: block;
-}
+} */
 
 .nav-container {
   display: flex;
@@ -154,6 +159,10 @@ h2:after {
 .nav-list a,
 .nav-list a:visited {
   color: var(--primary-text);
+  
+  opacity: 0.8;
+  background-size: contain;
+  display: block;
 }
 
 .nav-link {
@@ -164,15 +173,17 @@ h2:after {
   font-weight: 500;
   color: var(--primary-text);
   text-decoration: none;
-  padding: 0.5rem 0;
+  padding: 0 1rem;
   border-radius: 4px;
-  transition: all 0.3s ease-in-out;
+  transition: all 2.5s ease-in-out;
 }
 
-.nav-link:hover {
-  color: white;
-  background-color: var(--primary-orange);
-  transform: translateY(-4px);
+.nav-list a:hover {
+  background-image: url('/images/leaf.png');
+  background-repeat: no-repeat;
+  background-position: left;
+  opacity: 1;
+  background-position: right;
 }
 
 .mobile-header {
@@ -290,7 +301,7 @@ h2:after {
 
 .mobile-nav-link:hover {
   color: var(--primary-orange);
-  padding-left: 1.2rem;
+  padding: 0 1.2rem;
 }
 
 
@@ -332,7 +343,7 @@ h2:after {
   flex-direction: column;
   background: var(--dark-card-background);
   border-radius: 1rem;
-  box-shadow: var(--shadow);
+  box-shadow: var(--box-shadow);
   padding: 1.5rem;
   margin: 1rem 0;
   height: 100%;
@@ -340,13 +351,13 @@ h2:after {
 
 .cardhover:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: var(--box-shadow-hover);
 }
 
 .card-header {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-text));
+  background: linear-gradient(135deg, var(--secondary-blue), var(--secondary-text));
   border-radius: 1rem 5rem 0 5rem;
   color: var(--primary-text);
 }
@@ -354,7 +365,7 @@ h2:after {
 .card-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
 }
 
 .card-title {
@@ -406,7 +417,7 @@ h2:after {
   padding: 2rem;
   background: var(--dark-card-background);
   border-radius: 12px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--box-shadow);
 }
 
 .cta a,
@@ -443,7 +454,7 @@ h2:after {
 }
 
 .btn-primary {
-  background-color: var(--primary-blue);
+  background-color: var(--secondary-blue);
   color: white;
 }
 
@@ -495,8 +506,7 @@ h2:after {
     margin-top: 0.5rem;
   }
 
-  .contact-content,
-  .contact-container,
+
   .education-grid,
   .grid,
   .skills-grid,
@@ -508,7 +518,7 @@ h2:after {
 
   .contact-info-card,
   .contact-form-card {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .projects-container,
@@ -548,9 +558,11 @@ h2:after {
     gap: 1rem;
   }
 
-  .contact-content {
-    grid-template-columns: 1fr;
+  .contact-info-card,
+  .contact-form-card {
+    padding: 1rem;
   }
+
 }
 
 @media (min-width: 1536px) {

@@ -3,50 +3,54 @@ import { FaEnvelope/*, FaPhone*/, FaLinkedin, FaGithub, FaGlobe } from 'react-ic
 import '@/css/resume.css';
 
 export default function Resume() {
-  const projects = [
-    {
-      name: "OnSocket - No-Code launchpad for AI Discord Bots",
-      link: "https://github.com/gidsola/onsocket",
-      tech: ["Node.js", "WebSockets", "Docker", "MySQL", "Infrastructure as Code"],
-      description: [
-        "Container Manager - [Sample Only] - https://github.com/gidsola/Docker-Container-Manager",
-        "Built a WebSocket-based Discord gateway with heartbeat checks and session resumption",
-        "Implemented no-code bot deployment system using Docker containers",
-        "Designed for scalability with jittered heartbeats and auto-reconnection",
-        "Created system to dynamically deploy Discord bots in isolated containers",
-        "Automated Dockerfile generation, environment setup, and log streaming",
-        "Reduced manual deployment time from hours to minutes"
-      ]
-    },
-    {
-      name: "Container Manager - Docker Automation [Sample Only]",
-      link: "https://github.com/gidsola/Docker-Container-Manager",
-      tech: ["Node.js", "Docker", "MySQL", "Infrastructure as Code"],
-      description: [
+
+  // TODO: get rid of all the static infos.
+
+  
+  // const projects = [
+  //   {
+  //     name: "OnSocket - No-Code launchpad for AI Discord Bots",
+  //     link: "https://github.com/gidsola/onsocket",
+  //     tech: ["Node.js", "WebSockets", "Docker", "MySQL", "Infrastructure as Code"],
+  //     description: [
+  //       "Container Manager - [Sample Only] - https://github.com/gidsola/Docker-Container-Manager",
+  //       "Built a WebSocket-based Discord gateway with heartbeat checks and session resumption",
+  //       "Implemented no-code bot deployment system using Docker containers",
+  //       "Designed for scalability with jittered heartbeats and auto-reconnection",
+  //       "Created system to dynamically deploy Discord bots in isolated containers",
+  //       "Automated Dockerfile generation, environment setup, and log streaming",
+  //       "Reduced manual deployment time from hours to minutes"
+  //     ]
+  //   },
+  //   {
+  //     name: "Container Manager - Docker Automation [Sample Only]",
+  //     link: "https://github.com/gidsola/Docker-Container-Manager",
+  //     tech: ["Node.js", "Docker", "MySQL", "Infrastructure as Code"],
+  //     description: [
         
-      ]
-    },
-    {
-      name: "MicroService - Secure Next.js Server",
-      link: "https://github.com/gidsola/MicroService",
-      tech: ["Node.js", "Next.js", "TLS 1.3", "Security Headers"],
-      description: [
-        "Developed custom HTTP/HTTPS server with automatic TLS configuration",
-        "Implemented security headers (CSP, HSTS, XSS protection)",
-        "Event-driven architecture for efficient request handling"
-      ]
-    },
-    {
-      name: "Portfolio Backend - MongoDB Data Layer",
-      link: "https://github.com/gidsola/MongoConnect",
-      tech: ["Node.js", "MongoDB", "Next.js"],
-      description: [
-        "Built modular MongoDB client for static site generation",
-        "Optimized data aggregation from multiple collections",
-        "Integrated with Next.js for seamless frontend-backend communication"
-      ]
-    }
-  ];
+  //     ]
+  //   },
+  //   {
+  //     name: "NetService - Secure Next.js Server",
+  //     link: "https://github.com/gidsola/NetService",
+  //     tech: ["Node.js", "Next.js", "TLS 1.3", "Security Headers"],
+  //     description: [
+  //       "Developed custom HTTP/HTTPS server with automatic TLS configuration",
+  //       "Implemented security headers (CSP, HSTS, XSS protection)",
+  //       "Event-driven architecture for efficient request handling"
+  //     ]
+  //   },
+  //   {
+  //     name: "Portfolio Backend - MongoDB Data Layer",
+  //     link: "https://github.com/gidsola/MongoConnect",
+  //     tech: ["Node.js", "MongoDB", "Next.js"],
+  //     description: [
+  //       "Built modular MongoDB client for static site generation",
+  //       "Optimized data aggregation from multiple collections",
+  //       "Integrated with Next.js for seamless frontend-backend communication"
+  //     ]
+  //   }
+  // ];
 
   const experience = [
     {
@@ -147,7 +151,7 @@ export default function Resume() {
         </div>
 
         {/* Projects Section */}
-        <div className="section">
+        {/* <div className="section">
           <h2 className="section-subtitle">Key Projects</h2>
           <div className="projects-grid">
             {projects.map((project, index) => (
@@ -171,7 +175,7 @@ export default function Resume() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Experience Section */}
         <div className="section">

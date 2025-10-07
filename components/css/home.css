@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* background-color: var(--secondary-text); */
+  background: var(--dark-card-background);
   padding: 2rem;
 }
 
@@ -26,13 +26,13 @@
 }
 
 .egg-text {
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
   display: none;
 }
 
 .egg-text a, .egg-text a:visited {
   text-decoration: none;
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
 }
 
 .egg-container:hover {

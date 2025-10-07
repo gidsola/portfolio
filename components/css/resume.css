@@ -13,7 +13,7 @@
 }
 
 .contact-icon {
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
 }
 
 .contact-link {
@@ -22,7 +22,7 @@
 }
 
 .contact-link:hover {
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
   text-decoration: underline;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .project-link {
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
   text-decoration: none;
   font-size: 0.9rem;
 }
@@ -94,14 +94,6 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.tech-tag {
-  background-color: var(--background-alt);
-  padding: 0.3rem 0.7rem;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
 }
 
 .project-description {
@@ -118,7 +110,7 @@
 
 .project-bullet:before {
   content: "•";
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
   position: absolute;
   left: -0.75rem;
 }
@@ -174,7 +166,7 @@
 
 .experience-bullet:before {
   content: "•";
-  color: var(--primary-blue);
+  color: var(--secondary-blue);
   position: absolute;
   left: -0.75rem;
 }

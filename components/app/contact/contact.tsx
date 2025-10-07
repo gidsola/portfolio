@@ -130,7 +130,7 @@ export default function Contact() {
           Have a question or want to work together? Fill out the form or reach out through any of the channels below.
         </p>
 
-        <div className="contact-container">
+        <div className="grid">
 
           {/* Contact Info Card */}
           <div className="contact-info-card">

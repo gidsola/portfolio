@@ -17,8 +17,8 @@ export default function About({ pageData }: { pageData: AboutPageData }) {
             alt="Profile"
             className="profile-picture"
           />
-          <h1 className="name">Michael</h1>
-          <p className="title">(gidsola)</p>
+          <h1>Michael</h1>
+          <p>(gidsola)</p>
         </div>
 
         <div className="about-content">
