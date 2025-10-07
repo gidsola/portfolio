@@ -62,7 +62,7 @@ export default function About({ pageData }: { pageData: AboutPageData }) {
           <section className="contact-section">
             <h2>Get In Touch</h2>
             <div className="contact-info">
-              <p>Email: <a href="mailto:mgoodie@outlook.com">mgoodie@outlook.com</a></p>
+              <p>Email: <a href="mailto:mike@goodsie.ca">mike@goodsie.ca</a></p>
               <p>LinkedIn: <a href="https://www.linkedin.com/in/michael-goodie/">Michael Goodie</a></p>
               <p>GitHub: <a href="https://github.com/gidsola">gidsola</a></p>
             </div>

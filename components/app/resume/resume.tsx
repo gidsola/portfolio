@@ -112,7 +112,7 @@ export default function Resume() {
           <div className="contact-info">
             <div className="contact-item">
               <FaEnvelope className="contact-icon" />
-              <a href="mailto:mgoodie@outlook.com" className="contact-link">mgoodie@outlook.com</a>
+              <a href="mailto:mike@goodsie.ca" className="contact-link">mike@goodsie.ca</a>
             </div>
             {/* <div className="contact-item">
               <FaPhone className="contact-icon" />
