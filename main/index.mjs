@@ -28,12 +28,28 @@ try {
   const netservice = new NetService(process.env.DOMAIN);
 
   netservice
-    .Server
+    .register('*', netservice.Safety.mwRateLimit())
+    .register('*', netservice.Safety.mwBlockList())
+    .register('/test', async (req, res) => {
+      const
+        ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+        url = req.url,
+        method = req.method;
+
+      console.debug("User IP: ", ip, "\nMethod Used ", method, "\nPath Accessed ", url, "\nRequest Headers: ", req.rawHeaders);
+
+
+      return;
+    });
+
+  netservice.listen(() => {
+    netservice.emit('ready');
+  })
+
     .on('listening', async () => {
       logger('SERVER').info(chalk.greenBright('<< Server Listening >>'));
 
       netservice
-        .Sockitz
         .on('zREADY', async ({ client, req }) => {
           logger('SOCKITZ').info(chalk.greenBright('<< Client Hello >>'));
         })
@@ -84,11 +100,6 @@ try {
         .on('zCLOSE', async () => logger('SOCKITZ').info(chalk.greenBright('<< Client DisConnected >>')))
         .on('zERROR', async (e) => logger('SOCKITZ').info(chalk.redBright(e)));
 
-      netservice
-        .MiddlewareMgr
-        .register('*', netservice.Safety.mwRateLimit())
-        .register('*', netservice.Safety.mwBlockList());
-
       readline
         .createInterface({ input: process.stdin, output: process.stdout })
         .on('line', async (input) => input.trim().toLowerCase() === 'shutdown' && await gracefulShutdown(netservice));
@@ -121,4 +132,5 @@ try {
 catch (/** @type {any} */e) {
   console.error(e);
   logger().error(e instanceof Error ? e.message : e);
+  process.exit();
 };

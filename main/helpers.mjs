@@ -1,3 +1,4 @@
+
 import NetService from 'netservice';
 import nodemailer from 'nodemailer';
 import logger from './logger.mjs';
@@ -11,8 +12,8 @@ import chalk from 'chalk';
 export async function gracefulShutdown(NetService) {
   try {
     NetService.Server.closeAllConnections();
-    await NetService.NextServer.close();
-    logger().info(chalk.yellowBright('<< NextServer Offline >>'));
+    // await NetService.NextServer.close();
+    // logger().info(chalk.yellowBright('<< NextServer Offline >>'));
 
     NetService.Server.close(() => {
       logger().info(chalk.greenBright('<< Exiting Normally >>'));
@@ -73,3 +74,18 @@ export async function sendEmail(email, subject, text, html) {
     return false;
   };
 };
+
+
+
+/**
+ * Helper function to write a response and end the connection.
+ */
+export async function WriteAndEnd(res, statusCode, message) {
+  return res
+    .writeHead(statusCode, {
+      'Content-Length': Buffer.byteLength(message),
+      'Content-Type': 'text/plain'
+    })
+    .end(message);
+};
+
