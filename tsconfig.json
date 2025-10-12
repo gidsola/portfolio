@@ -1,9 +1,5 @@
 {
   // Change this to match your project
-  "exclude": [
-    "node_modules",
-    "main"
-  ],
   "compilerOptions": {
     "paths": {
       "@/*": [
@@ -16,7 +12,7 @@
     "checkJs": false,
     "declaration": false,
     "emitDeclarationOnly": false,
-    "outDir": ".types",
+    "outDir": ".react/@types",
     "declarationMap": false,
     "allowImportingTsExtensions": false,
     "skipLibCheck": true,
@@ -31,7 +27,8 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
@@ -47,7 +44,11 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/types/**/*.tsx"
-   ]
+    ".next/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out"
+  ]
 }

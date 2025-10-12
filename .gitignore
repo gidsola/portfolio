@@ -5,3 +5,5 @@ logs/
 config.json
 main/ssl/*
 .env
+.react/
+dist/

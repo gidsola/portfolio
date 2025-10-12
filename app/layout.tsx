@@ -1,6 +1,6 @@
 import Default from "@/layouts/_default/default";
 import "@/css/global.css"; 
-import Data from '@/data/data';
+import Data from '@/components/data/data';
 import { metadata } from '@/components/metadata/metadata';
 // import { Metadata } from 'next';
 export {metadata}
