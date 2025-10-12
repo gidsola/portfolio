@@ -7,7 +7,9 @@ export default defineConfig({
     build: {
         manifest: true,
         rollupOptions: {
-            input: "app/layout.tsx",
+            input: "app/layout.js",
+            makeAbsoluteExternalsRelative: true,
+            jsx: true
         },
     },
 });

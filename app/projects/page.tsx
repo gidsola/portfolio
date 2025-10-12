@@ -1,5 +1,5 @@
-import Projects from "@/app/projects/projects";
-import Data from '@/data/data';
+import Projects from "@/components/app/projects/projects";
+import Data from '@/components/data/data';
 
 export default async function ProjectsPage() {
   const

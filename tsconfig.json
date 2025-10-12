@@ -4,7 +4,7 @@
     "paths": {
       "@/*": [
         "./*",
-        "./*.tsx",
+        "./app/*",
         "./components/*"
       ]
     },
@@ -12,7 +12,7 @@
     "checkJs": false,
     "declaration": false,
     "emitDeclarationOnly": false,
-    "outDir": ".react/@types",
+    "outDir": ".react",
     "declarationMap": false,
     "allowImportingTsExtensions": false,
     "skipLibCheck": true,
